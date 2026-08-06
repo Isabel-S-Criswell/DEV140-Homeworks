@@ -4,61 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Isabel's Portfolio</title>
-    
     <!-- GOOGLE FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-
-    <!-- LINKED CSS FILE (Rubric Requirement) -->
+    <!-- LINKED CSS FILE -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <!-- Semantic Element 1: Header (ID Selector: #main-header) -->
+    <!-- Semantic Element 1: Header -->
     <header id="main-header">
         <h1>Isabel Criswell's Web Page</h1>
-        
-        <!-- Semantic Element 2: Nav (Flexbox Container) -->
+        <!-- Semantic Element 2: Nav -->
         <nav id="main-nav">
             <ul>
-                <li><a href="#about">About Me</a></li>
-                <li><a href="#interests">Interests</a></li>
+                <!-- Fix 2: Added explicit ARIA labels for non-descriptive link context -->
+                <li><a href="#about" aria-label="Jump to About Me section">About Me</a></li>
+                <li><a href="#interests" aria-label="Jump to My Favorite Topics section">Interests</a></li>
             </ul>
         </nav>
     </header>
 
-    <!-- Semantic Element 3: Main (Grid Container) -->
+    <!-- Semantic Element 3: Main -->
     <main class="grid-container">
-        
-        <!-- Semantic Element 4: Section (Class Selector: .card) -->
+        <!-- Semantic Element 4: Section -->
         <section id="about" class="card">
             <h2>About Me</h2>
             <p>Hi there! I'm Isabel, a recent business administration graduate with a passion for data analysis and document preservation. Currently, I'm focusing on improving my skills in these areas and exploring new opportunities to apply my knowledge.</p>
-            
-            <img class="profile-img" src="profile.jpg" alt="A red haired woman wearing clear glasses, large floral earrings, and black undergraduate graduation regalia with a grey stole and two cords. She is smiling and looking at the camera. Striding forwards, smiles are bright and confident through the garden of red, white, and pink roses.">
+            <!-- Fix 1: Shortened long alt text to be concise and relevant -->
+            <img class="profile-img" src="profile.jpg" alt="Isabel smiling in graduation regalia standing in a rose garden">
         </section>
 
-        <!-- Section 2 (Class Selector: .card) -->
+        <!-- Section 2 -->
         <section id="interests" class="card">
             <h2>My Favorite Topics</h2>
             <p>Here are a few things I'm currently working on or learning about:</p>
-            
-            <ol>
+            <!-- Fix 3: Changed <ol> to <ul> for non-sequential content -->
+            <ul class="topics-list">
                 <li>Web Development &amp; Semantics</li>
                 <li>Applied AI &amp; Data Analysis</li>
                 <li>Console Modding &amp; Retro Gaming</li>
                 <li>Creative Problem Solving</li>
                 <li>Water Mitigation &amp; Mold Remediation Strategies</li>
-            </ol>
+            </ul>
         </section>
-
     </main>
 
     <!-- Semantic Element 5: Footer -->
     <footer>
-        <p>&copy; 2026 Isabel Criswell. Built with hopes, dreams, and poptart crumbs.</p>
+        <p>© 2026 Isabel Criswell. Built with hopes, dreams, and poptart crumbs.</p>
     </footer>
-
 </body>
 </html>
