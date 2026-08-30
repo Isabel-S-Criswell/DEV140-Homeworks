@@ -73,6 +73,20 @@
 
     <main class="main-content-wrapper">
 
+        <!-- FULL-WIDTH SCRATCHPAD AT THE TOP -->
+        <section id="sticky-note-section" class="card">
+            <h2>Quick Thoughts Scratchpad</h2>
+            <p class="subtext">Spill your thoughts or quickly jot down reminders:</p>
+
+            <div class="note-input-container">
+                <input type="text" id="note-input" placeholder="Type a quick thought..." aria-label="New note text">
+                <button id="add-note-btn" class="btn-primary" type="button">Add Note</button>
+            </div>
+
+            <ul id="sticky-note-list" class="sticky-note-grid"></ul>
+        </section>
+
+        <!-- 2-COLUMN ROW FOR ABOUT ME & INTERESTS -->
         <div class="top-cards-row">
             
             <section id="about" class="card">
@@ -95,18 +109,6 @@
                     <li>Home Buying &amp; Seeking Legal Counsel</li>
                     <li>Stress Management Training</li>
                 </ul>
-            </section>
-
-            <section id="sticky-note-section" class="card">
-                <h2>Quick Thoughts Scratchpad</h2>
-                <p class="subtext">Spill your thoughts or quickly jot down reminders:</p>
-
-                <div class="note-input-container">
-                    <input type="text" id="note-input" placeholder="Type a quick thought..." aria-label="New note text">
-                    <button id="add-note-btn" class="btn-primary" type="button">Add Note</button>
-                </div>
-
-                <ul id="sticky-note-list" class="sticky-note-grid"></ul>
             </section>
 
         </div>
