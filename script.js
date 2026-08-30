@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbxOqsMHfh2Qf0XTPhWeUznCCheEMtkJdcwZN6bGj1kQDSF4LAxn8rwwMdi-yN0NLrah/exec';
+    const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbw25hwFfwblp7pRj0uEhot_CXxtWwBTg6IfAq1JiGHUsrIUWxddt2I2G1idOuhNamA4/exec';
 
     let rawAssignments = [];
     let selectedWeek = 'ALL';
@@ -10,11 +10,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const courseFilter = document.getElementById('course-filter');
     const statusFilter = document.getElementById('status-filter');
 
-    // Helper function to safely read object properties regardless of case
+    // Case-insensitive key lookup helper
     function getProp(obj, key) {
         if (!obj) return '';
         const foundKey = Object.keys(obj).find(k => k.toLowerCase() === key.toLowerCase());
         return foundKey ? obj[foundKey] : '';
+    }
+
+    // Helper: Determine if an assignment item is marked complete
+    function isItemComplete(item) {
+        const progressVal = String(getProp(item, 'progress')).trim().toLowerCase();
+        const completeVal = String(getProp(item, 'complete')).trim().toLowerCase();
+        const statusVal = String(getProp(item, 'status')).trim().toLowerCase();
+
+        return progressVal === 'complete' || 
+               completeVal === 'true' || 
+               statusVal === 'complete' || 
+               statusVal === 'completed';
     }
 
     // --------------------------------------------------
@@ -48,10 +60,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const data = await response.json();
-            // Handle cases where data is wrapped in an object property (e.g., data.data or data.rows)
-            rawAssignments = Array.isArray(data) ? data : (data.data || data.rows || []);
             
-            console.log("Successfully fetched data rows:", rawAssignments.length);
+            // Handle array or wrapped object responses, filtering out empty placeholder rows
+            const unparsedRows = Array.isArray(data) ? data : (data.data || data.rows || []);
+            rawAssignments = unparsedRows.filter(item => {
+                const title = getProp(item, 'assignment') || getProp(item, 'title');
+                return title && String(title).trim().toLowerCase() !== 'empty';
+            });
+            
+            console.log("Successfully fetched assignment rows:", rawAssignments.length);
 
             populateCourseDropdown(rawAssignments);
             updateTermProgress(rawAssignments);
@@ -68,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Populate course options dynamically
+    // Populate course dropdown
     function populateCourseDropdown(data) {
         if (!courseFilter) return;
         const rawCourses = data.map(item => getProp(item, 'class') || getProp(item, 'course')).filter(Boolean);
@@ -82,14 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTermProgress(data) {
         const currentWeek = getCurrentAcademicWeek();
         const totalTasks = data.length;
-        
-        const completedTasks = data.filter(item => {
-            const progressVal = String(getProp(item, 'progress')).trim().toLowerCase();
-            const completeVal = String(getProp(item, 'complete')).trim().toLowerCase();
-            const statusVal = String(getProp(item, 'status')).trim().toLowerCase();
-            return progressVal === 'complete' || completeVal === 'true' || statusVal === 'complete' || statusVal === 'completed';
-        }).length;
-
+        const completedTasks = data.filter(isItemComplete).length;
         const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
         const fillBar = document.getElementById('term-progress-fill');
@@ -118,18 +128,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const filtered = rawAssignments.filter(item => {
             const itemCourse = getProp(item, 'class') || getProp(item, 'course');
             const itemWeek = getProp(item, 'week');
+            
             const matchesCourse = selectedCourse === 'ALL' || itemCourse === selectedCourse;
             const matchesWeek = selectedWeek === 'ALL' || String(itemWeek) === String(selectedWeek);
             
-            const progressVal = String(getProp(item, 'progress')).trim().toLowerCase();
-            const completeVal = String(getProp(item, 'complete')).trim().toLowerCase();
-            const statusVal = String(getProp(item, 'status')).trim().toLowerCase();
-
-            const isCompleted = progressVal === 'complete' || completeVal === 'true' || statusVal === 'complete' || statusVal === 'completed';
-
+            const isDone = isItemComplete(item);
             const matchesStatus = selectedStatus === 'ALL' || 
-                (selectedStatus === 'Complete' && isCompleted) || 
-                (selectedStatus === 'Pending' && !isCompleted);
+                (selectedStatus === 'Complete' && isDone) || 
+                (selectedStatus === 'Pending' && !isDone);
 
             return matchesCourse && matchesWeek && matchesStatus;
         });
@@ -141,11 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         filtered.forEach(item => {
             const li = document.createElement('li');
-            
-            const progressVal = String(getProp(item, 'progress')).trim().toLowerCase();
-            const completeVal = String(getProp(item, 'complete')).trim().toLowerCase();
-            const statusVal = String(getProp(item, 'status')).trim().toLowerCase();
-            const isDone = progressVal === 'complete' || completeVal === 'true' || statusVal === 'complete' || statusVal === 'completed';
+            const isDone = isItemComplete(item);
             
             const priorityVal = getProp(item, 'priority');
             const isHighPriority = String(priorityVal).toLowerCase() === 'high';
@@ -166,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
                 <span class="badge ${isDone ? 'badge-complete' : 'badge-pending'}">
-                    ${isDone ? 'Completed' : (progressVal || statusVal || 'Pending')}
+                    ${isDone ? 'Completed' : 'Pending'}
                 </span>
             `;
 
@@ -212,6 +214,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initial fetch
+    // Initial fetch on page load
     fetchAssignmentsFromSheets();
 });
