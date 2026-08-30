@@ -76,7 +76,7 @@ input:checked + .slider:before {
 
 .sun-icon { margin-left: 2px; }
 .moon-icon { margin-right: 2px; }
-}
+
 
 /* DARK MODE BASE OVERRIDES */
 body.dark-mode {
