@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-// --------------------------------------------------
+    // --------------------------------------------------
     // 5. THEME DROPDOWN TOGGLE & COLOR PICKER CONTROLS
     // --------------------------------------------------
     const themeToggleBtn = document.getElementById('theme-menu-toggle');
