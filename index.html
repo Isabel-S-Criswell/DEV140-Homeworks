@@ -4,74 +4,106 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Isabel's Portfolio</title>
-    <!-- GOOGLE FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-    <!-- LINKED CSS FILE -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Header Navigation -->
+
     <header id="main-header">
         <h1>Isabel Criswell's Web Page</h1>
-        <nav id="main-nav">
-            <ul>
-                <li><a href="#about" aria-label="Jump to About Me section">About Me</a></li>
-                <li><a href="#interests" aria-label="Jump to My Favorite Topics section">Interests</a></li>
-                <li><a href="#hw7-dashboard" aria-label="Jump to Dashboard section">Dashboard</a></li>
-                <li><a href="#sticky-note-section" aria-label="Jump to Scratchpad section">Scratchpad</a></li>
-            </ul>
-        </nav>
-    </header>
-    
-    <!-- Main Content Grid -->
-    <main class="grid-container">
-        <!-- Section 1: About -->
-        <section id="about" class="card">
-            <h2>About Me</h2>
-            <p>Hi there! I'm Isabel, a recent business administration graduate with a passion for data analysis and document preservation. Currently, I'm focusing on improving my skills in these areas and exploring new opportunities to apply my knowledge.</p>
-            <img class="profile-img" src="profile.jpg" alt="Isabel smiling in graduation regalia standing in a rose garden">
-        </section>
-
-        <!-- Section 2: Interests -->
-        <section id="interests" class="card">
-            <h2>My Favorite Topics</h2>
-            <p>Here are a few things I'm currently working on or learning about:</p>
-            <ul>
-                <li>Web Development &amp; Semantics</li>
-                <li>Applied AI &amp; Data Analysis</li>
-                <li>Console Modding &amp; Retro Gaming</li>
-                <li>Creative Problem Solving</li>
-                <li>Water Mitigation &amp; Mold Remediation Strategies</li>
-                <li>Document Preservation &amp; Digital Archiving</li>
-                <li>Legalese</li>
-                <li>Home Buying &amp; Seeking Legal Counsel</li>
-                <li>Stress Management Training</li>
-            </ul>
-        </section>
-
-        <!-- Section 3: Homework 7 Dashboard -->
-        <section id="hw7-dashboard" class="card">
-            <h2>Academic Planner & Assignment Hub</h2>
-
-            <!-- Dynamic Term & Week Progress Tracker -->
-            <div class="dashboard-module">
-                <div class="progress-header">
-                    <h3 id="term-header">Term Progress</h3>
-                    <span id="week-badge" class="badge">Calculating...</span>
-                </div>
-                <div class="progress-bar-track">
-                    <div id="term-progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
-                </div>
-                <p id="term-status-text" class="subtext">Click "Sync Sheets Data" to pull live coursework...</p>
+        
+        <div class="header-right-controls">
+            <div class="theme-picker-container" aria-label="Global Site Theme Customizer">
+                <button type="button" class="theme-swatch custom-picker-btn" id="custom-theme-btn" aria-label="Custom Color Picker" title="Custom Color">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+                        <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+                        <path d="M2 2l7.5 7.5"/>
+                        <circle cx="11" cy="11" r="2"/>
+                    </svg>
+                    <input type="color" id="custom-color-picker" value="#9333ea" style="display: none;">
+                </button>
+                <button type="button" class="theme-swatch swatch-purple active" data-theme="purple" title="Royal Purple" aria-label="Royal Purple Theme"></button>
+                <button type="button" class="theme-swatch swatch-teal" data-theme="teal" title="Ocean Teal" aria-label="Ocean Teal Theme"></button>
+                <button type="button" class="theme-swatch swatch-green" data-theme="green" title="Forest Green" aria-label="Forest Green Theme"></button>
+                <button type="button" class="theme-swatch swatch-pink" data-theme="pink" title="Soft Pink" aria-label="Soft Pink Theme"></button>
+                <button type="button" class="theme-swatch swatch-orange" data-theme="orange" title="Sunset Orange" aria-label="Sunset Orange Theme"></button>
+                <button type="button" class="theme-swatch swatch-magenta" data-theme="magenta" title="Magenta Pink" aria-label="Magenta Pink Theme"></button>
             </div>
 
-            <!-- Live Google Sheets Assignment Viewer -->
+            <nav id="main-nav">
+                <ul>
+                    <li><a href="#about" aria-label="Jump to About Me section">About Me</a></li>
+                    <li><a href="#interests" aria-label="Jump to My Favorite Topics section">Interests</a></li>
+                    <li><a href="#sticky-note-section" aria-label="Jump to Scratchpad section">Scratchpad</a></li>
+                    <li><a href="#hw7-dashboard" aria-label="Jump to Dashboard section">Dashboard</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="term-progress-container">
+        <div class="term-progress-inner">
+            <div class="progress-header">
+                <h3 id="term-header">Term Progress</h3>
+                <span id="week-badge" class="badge">Calculating...</span>
+            </div>
+            <div class="progress-bar-track">
+                <div id="term-progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+            <p id="term-status-text" class="subtext">Click "Sync Sheets Data" to pull live coursework...</p>
+        </div>
+    </div>
+
+    <main class="main-content-wrapper">
+
+        <div class="top-cards-row">
+            
+            <section id="about" class="card">
+                <h2>About Me</h2>
+                <p>Hi there! I'm Isabel, a recent business administration graduate with a passion for data analysis and document preservation. Currently, I'm focusing on improving my skills in these areas and exploring new opportunities to apply my knowledge.</p>
+                <img class="profile-img" src="profile.jpg" alt="Isabel smiling in graduation regalia standing in a rose garden">
+            </section>
+
+            <section id="interests" class="card">
+                <h2>My Favorite Topics</h2>
+                <p>Here are a few things I'm currently working on or learning about:</p>
+                <ul>
+                    <li>Web Development &amp; Semantics</li>
+                    <li>Applied AI &amp; Data Analysis</li>
+                    <li>Console Modding &amp; Retro Gaming</li>
+                    <li>Creative Problem Solving</li>
+                    <li>Water Mitigation &amp; Mold Remediation Strategies</li>
+                    <li>Document Preservation &amp; Digital Archiving</li>
+                    <li>Legalese</li>
+                    <li>Home Buying &amp; Seeking Legal Counsel</li>
+                    <li>Stress Management Training</li>
+                </ul>
+            </section>
+
+            <section id="sticky-note-section" class="card">
+                <h2>Quick Thoughts Scratchpad</h2>
+                <p class="subtext">Spill your thoughts or quickly jot down reminders:</p>
+
+                <div class="note-input-container">
+                    <input type="text" id="note-input" placeholder="Type a quick thought..." aria-label="New note text">
+                    <button id="add-note-btn" class="btn-primary" type="button">Add Note</button>
+                </div>
+
+                <ul id="sticky-note-list" class="sticky-note-grid">
+                    </ul>
+            </section>
+
+        </div>
+
+        <section id="hw7-dashboard" class="card assignments-full-width-card">
+            <h2>Academic Planner & Assignment Hub</h2>
+
             <div class="dashboard-module">
                 <h3>Live Assignments</h3>
                 
-                <!-- Controls: Course & Status Filters -->
                 <div class="filter-bar">
                     <select id="course-filter">
                         <option value="ALL" selected>All Courses</option>
@@ -86,7 +118,6 @@
                     <button id="sync-api-btn" class="btn-primary">Sync Sheets Data</button>
                 </div>
 
-                <!-- Week Pill Selector -->
                 <div class="week-selector">
                     <button class="week-btn" data-week="ALL">All Weeks</button>
                     <button class="week-btn" data-week="1">W1</button>
@@ -102,60 +133,18 @@
                     <button class="week-btn" data-week="11">Finals (W11)</button>
                 </div>
 
-                <!-- Dynamic Output List -->
                 <ul id="sheet-assignment-list" class="dynamic-list">
                     <li class="loading-state">Click "Sync Sheets Data" above to fetch your assignments!</li>
                 </ul>
             </div>
-
-            <!-- Theme Customizer (Global Site Theme Swatches) -->
-            <div class="dashboard-module">
-                <h3>Global Theme Customizer</h3>
-                <p class="subtext">Select a theme swatch to customize the entire website:</p>
-                <div class="theme-picker-container">
-                    <button type="button" class="theme-swatch custom-picker-btn" id="custom-theme-btn" aria-label="Custom Color Picker" title="Custom Color">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 19l7-7 3 3-7 7-3-3z"/>
-                            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
-                            <path d="M2 2l7.5 7.5"/>
-                            <circle cx="11" cy="11" r="2"/>
-                        </svg>
-                        <input type="color" id="custom-color-picker" value="#9333ea" style="display: none;">
-                    </button>
-                    <button type="button" class="theme-swatch swatch-purple active" data-theme="purple" title="Royal Purple" aria-label="Royal Purple Theme"></button>
-                    <button type="button" class="theme-swatch swatch-teal" data-theme="teal" title="Ocean Teal" aria-label="Ocean Teal Theme"></button>
-                    <button type="button" class="theme-swatch swatch-green" data-theme="green" title="Forest Green" aria-label="Forest Green Theme"></button>
-                    <button type="button" class="theme-swatch swatch-pink" data-theme="pink" title="Soft Pink" aria-label="Soft Pink Theme"></button>
-                    <button type="button" class="theme-swatch swatch-orange" data-theme="orange" title="Sunset Orange" aria-label="Sunset Orange Theme"></button>
-                    <button type="button" class="theme-swatch swatch-magenta" data-theme="magenta" title="Magenta Pink" aria-label="Magenta Pink Theme"></button>
-                </div>
-            </div>
         </section>
 
-        <!-- Section 4: Quick Thoughts Sticky Notes -->
-        <section id="sticky-note-section" class="card">
-            <h2>Quick Thoughts Scratchpad</h2>
-            <p class="subtext">Spill your thoughts or quickly jot down reminders:</p>
-
-            <!-- Form to Add Notes -->
-            <div class="note-input-container">
-                <input type="text" id="note-input" placeholder="Type a quick thought..." aria-label="New note text">
-                <button id="add-note-btn" class="btn-primary" type="button">Add Note</button>
-            </div>
-
-            <!-- Dynamic Note Container -->
-            <ul id="sticky-note-list" class="sticky-note-grid">
-                <!-- Dynamic sticky notes load here -->
-            </ul>
-        </section>
     </main>
 
-    <!-- Footer -->
     <footer>
         <p>© 2026 Isabel Criswell. Built with hopes, dreams, and poptart crumbs.</p>
     </footer>
 
-    <!-- LINKED JS FILE -->
     <script src="script.js"></script>
 </body>
 </html>
