@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --------------------------------------------------
+// --------------------------------------------------
     // 5. THEME DROPDOWN TOGGLE & COLOR PICKER CONTROLS
     // --------------------------------------------------
     const themeToggleBtn = document.getElementById('theme-menu-toggle');
@@ -284,7 +284,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Apply swatch themes dynamically while accounting for Dark Mode
     function applyThemePalette(themeKey) {
         const themeVars = THEMES[themeKey];
         if (!themeVars) return;
@@ -292,8 +291,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const isDark = document.body.classList.contains('dark-mode');
 
         Object.keys(themeVars).forEach(key => {
-            // If Dark Mode is active, skip background and card variables so dark mode styles prevail
-            if (isDark && (key === '--bg-color' || key === '--card-bg')) {
+            // If in Dark Mode, skip overriding background/card variables so dark styles take priority
+            if (isDark && (key === '--bg-color' || key === '--card-bg' || key === '--text-color')) {
                 return;
             }
             document.documentElement.style.setProperty(key, themeVars[key]);
@@ -318,7 +317,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Custom Color Input Handler - Updates primary accents dynamically
     if (customColorInput) {
         customColorInput.addEventListener('input', (e) => {
             const chosenColor = e.target.value;
@@ -326,12 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.documentElement.style.setProperty('--heading-color', chosenColor);
             document.documentElement.style.setProperty('--accent-color', chosenColor);
             document.documentElement.style.setProperty('--accent-hover', chosenColor);
-            document.documentElement.style.setProperty('--subtext-color', chosenColor);
             
-            // Soft opacity fills for sticky notes and borders
-            document.documentElement.style.setProperty('--sticky-bg', chosenColor + '33');
-            document.documentElement.style.setProperty('--border-color', chosenColor + '40');
-
             swatches.forEach(s => s.classList.remove('active'));
             if (customColorInput.parentElement) {
                 customColorInput.parentElement.classList.add('active');
@@ -341,7 +334,6 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('dashboard_accent_theme');
         });
     }
-
     // --------------------------------------------------
     // 6. STICKY NOTE SCRATCHPAD (WITH LOCALSTORAGE)
     // --------------------------------------------------
@@ -440,60 +432,45 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+// --------------------------------------------------
+    // 8. LIGHT / DARK MODE TOGGLE (FUNCTIONAL & PERSISTENT)
     // --------------------------------------------------
-    // 8. LIGHT / DARK MODE TOGGLE (WITH LOCALSTORAGE)
-    // --------------------------------------------------
-    const modeToggleBtn = document.getElementById('mode-toggle-btn');
-    const modeIcon = document.getElementById('mode-icon');
-    const modeLabel = document.getElementById('mode-label');
+    const modeCheckbox = document.getElementById('mode-toggle-checkbox');
 
-    function applyDarkModeState(isDark) {
+    function setDarkMode(isDark) {
         if (isDark) {
             document.body.classList.add('dark-mode');
-            if (modeIcon) modeIcon.textContent = '☀️';
-            if (modeLabel) modeLabel.textContent = 'Light';
+            // Remove inline overrides on bg/card so CSS class rules work
+            document.documentElement.style.removeProperty('--bg-color');
+            document.documentElement.style.removeProperty('--card-bg');
+            document.documentElement.style.removeProperty('--text-color');
         } else {
             document.body.classList.remove('dark-mode');
-            if (modeIcon) modeIcon.textContent = '🌙';
-            if (modeLabel) modeLabel.textContent = 'Dark';
+            // Re-apply light palette theme values
+            const currentTheme = localStorage.getItem('dashboard_accent_theme') || 'purple';
+            if (THEMES[currentTheme]) {
+                applyThemePalette(currentTheme);
+            }
         }
 
-        // Re-apply current saved palette theme to clear/restore background inline styles
-        const activeTheme = localStorage.getItem('dashboard_accent_theme') || 'purple';
-        if (!localStorage.getItem('dashboard_custom_color')) {
-            applyThemePalette(activeTheme);
+        if (modeCheckbox) {
+            modeCheckbox.checked = isDark;
         }
+
+        localStorage.setItem('dashboard_theme_mode', isDark ? 'dark' : 'light');
     }
 
-    // Load saved settings on startup
+    // Initialize saved mode preference
     const savedMode = localStorage.getItem('dashboard_theme_mode');
     if (savedMode === 'dark') {
-        applyDarkModeState(true);
+        setDarkMode(true);
+    } else {
+        setDarkMode(false);
     }
 
-    const savedTheme = localStorage.getItem('dashboard_accent_theme');
-    const savedCustomColor = localStorage.getItem('dashboard_custom_color');
-
-    if (savedCustomColor && customColorInput) {
-        customColorInput.value = savedCustomColor;
-        customColorInput.dispatchEvent(new Event('input'));
-    } else if (savedTheme && THEMES[savedTheme]) {
-        applyThemePalette(savedTheme);
-        swatches.forEach(s => {
-            if (s.getAttribute('data-theme') === savedTheme) {
-                s.classList.add('active');
-            } else {
-                s.classList.remove('active');
-            }
-        });
-    }
-
-    if (modeToggleBtn) {
-        modeToggleBtn.addEventListener('click', () => {
-            const isCurrentlyDark = document.body.classList.contains('dark-mode');
-            const nextState = !isCurrentlyDark;
-            applyDarkModeState(nextState);
-            localStorage.setItem('dashboard_theme_mode', nextState ? 'dark' : 'light');
+    if (modeCheckbox) {
+        modeCheckbox.addEventListener('change', (e) => {
+            setDarkMode(e.target.checked);
         });
     }
     // Initialize saved notes and sheet data on page load
