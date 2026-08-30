@@ -36,7 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. FETCH FROM APPS SCRIPT
     // --------------------------------------------------
     async function fetchAssignmentsFromSheets() {
-        assignmentList.innerHTML = `<li class="loading-state">⏳ Connecting to Google Sheets...</li>`;
+        if (assignmentList) {
+            assignmentList.innerHTML = `<li class="loading-state">⏳ Connecting to Google Sheets...</li>`;
+        }
 
         try {
             const response = await fetch(SHEETS_API_URL, { redirect: 'follow' });
@@ -56,16 +58,19 @@ document.addEventListener('DOMContentLoaded', () => {
             renderFilteredAssignments();
         } catch (error) {
             console.error('Error fetching sheet data:', error);
-            assignmentList.innerHTML = `
-                <li class="assignment-card">
-                    ❌ <strong>Sync Failed:</strong> ${error.message}.<br>
-                    Make sure your Web App deployment is set to "Anyone" access.
-                </li>`;
+            if (assignmentList) {
+                assignmentList.innerHTML = `
+                    <li class="assignment-card">
+                        ❌ <strong>Sync Failed:</strong> ${error.message}.<br>
+                        Make sure your Web App deployment is set to "Anyone" access.
+                    </li>`;
+            }
         }
     }
 
     // Populate course options dynamically
     function populateCourseDropdown(data) {
+        if (!courseFilter) return;
         const rawCourses = data.map(item => getProp(item, 'class') || getProp(item, 'course')).filter(Boolean);
         const courses = ['ALL', ...new Set(rawCourses)];
         courseFilter.innerHTML = courses.map(c => `<option value="${c}">${c === 'ALL' ? 'All Courses' : c}</option>`).join('');
@@ -104,10 +109,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. RENDER FILTERED ASSIGNMENTS TO DOM
     // --------------------------------------------------
     function renderFilteredAssignments() {
+        if (!assignmentList) return;
         assignmentList.innerHTML = '';
 
-        const selectedCourse = courseFilter.value;
-        const selectedStatus = statusFilter.value;
+        const selectedCourse = courseFilter ? courseFilter.value : 'ALL';
+        const selectedStatus = statusFilter ? statusFilter.value : 'ALL';
 
         const filtered = rawAssignments.filter(item => {
             const itemCourse = getProp(item, 'class') || getProp(item, 'course');
@@ -200,7 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
         accentInput.addEventListener('input', (e) => {
             let color = e.target.value.trim();
             if (color) {
-                // Apply color directly to card background
                 dashboardCard.style.backgroundColor = color;
                 dashboardCard.style.transition = 'background-color 0.3s ease';
             }
