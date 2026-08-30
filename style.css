@@ -376,3 +376,69 @@ input[type="color"] {
     padding: 32px 48px;
   }
 }
+
+/* STICKY NOTE FEATURE */
+.note-input-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.note-input-container input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+.sticky-note-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sticky-card {
+    background-color: #fef08a; /* Warm Sticky Yellow */
+    color: #1e293b;
+    padding: 16px;
+    border-radius: 4px;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 120px;
+    word-break: break-word;
+    transform: rotate(-1deg);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sticky-card:nth-child(even) {
+    transform: rotate(1.5deg);
+}
+
+.sticky-card:hover {
+    transform: scale(1.03) rotate(0deg);
+    box-shadow: 4px 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.delete-note-btn {
+    align-self: flex-end;
+    background: transparent;
+    border: none;
+    color: #991b1b;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 2px 6px;
+    line-height: 1;
+    margin-top: 10px;
+}
+
+.delete-note-btn:hover {
+    color: #dc2626;
+}

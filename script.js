@@ -160,7 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const title = getProp(item, 'assignment') || getProp(item, 'title') || getProp(item, 'name') || 'Untitled Assignment';
             const courseCode = (getProp(item, 'class') || getProp(item, 'course') || 'General').trim();
             
-            // Map course code to config
             const courseInfo = COURSE_CONFIG[courseCode] || { name: courseCode, color: '#6c757d' };
 
             const weekNum = getProp(item, 'week') || '-';
@@ -168,7 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             li.className = `assignment-card ${isDone ? 'complete' : ''} ${isHighPriority ? 'high-priority' : ''}`;
             
-            // Set the left border color dynamically to match the course color
             li.style.borderLeftColor = courseInfo.color;
             
             li.innerHTML = `
@@ -229,6 +227,61 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --------------------------------------------------
+    // 7. STICKY NOTE SCRATCHPAD (CREATE & REMOVE NODES)
+    // --------------------------------------------------
+    const noteInput = document.getElementById('note-input');
+    const addNoteBtn = document.getElementById('add-note-btn');
+    const stickyNoteList = document.getElementById('sticky-note-list');
+
+    function createStickyNote() {
+        if (!noteInput || !stickyNoteList) return;
+        
+        const textValue = noteInput.value.trim();
+        if (!textValue) return;
+
+        // 1. Create <li> container
+        const li = document.createElement('li');
+        li.className = 'sticky-card';
+
+        // 2. Create note text element
+        const p = document.createElement('p');
+        p.textContent = textValue;
+
+        // 3. Create delete button (Bonus Criteria!)
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-note-btn';
+        deleteBtn.innerHTML = '&times;'; // 'x' icon
+        deleteBtn.title = 'Delete note';
+        deleteBtn.setAttribute('aria-label', 'Delete note');
+
+        // Remove element on click
+        deleteBtn.addEventListener('click', () => {
+            li.remove();
+        });
+
+        // 4. Assemble and append into DOM
+        li.appendChild(p);
+        li.appendChild(deleteBtn);
+        stickyNoteList.appendChild(li);
+
+        // Clear input field
+        noteInput.value = '';
+    }
+
+    // Event Listeners for Sticky Notes
+    if (addNoteBtn && noteInput) {
+        addNoteBtn.addEventListener('click', createStickyNote);
+        
+        // Press Enter to submit note
+        noteInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                createStickyNote();
+            }
+        });
+    }
+
     // Initial fetch on page load
     fetchAssignmentsFromSheets();
-});
+
+}); // Matches DOMContentLoaded on line 1
