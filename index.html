@@ -15,42 +15,37 @@
     <h1>Isabel Criswell's Web Page</h1>
     
     <div class="header-right-controls">
-       
-        <!-- Light / Dark Mode Toggle Switch -->
-    <button id="mode-toggle-btn" class="mode-toggle-btn" aria-label="Toggle dark mode">
-        <span id="mode-icon">🌙</span>
-        <span id="mode-label">Dark</span>
-    </button>
-        
-        <!-- Theme Dropdown Toggle Button -->
-        <div class="theme-dropdown-wrapper">
-            <button type="button" class="theme-toggle-btn" id="theme-menu-toggle" aria-label="Open Theme Selector" title="Choose Theme">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 19l7-7 3 3-7 7-3-3z"/>
-                    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
-                    <path d="M2 2l7.5 7.5"/>
-                    <circle cx="11" cy="11" r="2"/>
-                </svg>
-            </button>
+    <!-- Modern Toggle Switch -->
+    <label class="theme-switch" for="mode-toggle-checkbox" title="Toggle Light/Dark Mode">
+        <input type="checkbox" id="mode-toggle-checkbox" aria-label="Toggle dark mode">
+        <span class="slider round">
+            <span class="icon sun-icon">☀️</span>
+            <span class="icon moon-icon">🌙</span>
+        </span>
+    </label>
 
-            <!-- Floating Color Picker Menu -->
-            <div class="theme-dropdown-menu" id="theme-dropdown-menu">
-                <p class="dropdown-label">Select Theme:</p>
-                <div class="theme-picker-container">
-                    <button type="button" class="theme-swatch swatch-purple active" data-theme="purple" title="Royal Purple" aria-label="Royal Purple Theme"></button>
-                    <button type="button" class="theme-swatch swatch-teal" data-theme="teal" title="Ocean Teal" aria-label="Ocean Teal Theme"></button>
-                    <button type="button" class="theme-swatch swatch-green" data-theme="green" title="Forest Green" aria-label="Forest Green Theme"></button>
-                    <button type="button" class="theme-swatch swatch-pink" data-theme="pink" title="Soft Pink" aria-label="Soft Pink Theme"></button>
-                    <button type="button" class="theme-swatch swatch-orange" data-theme="orange" title="Sunset Orange" aria-label="Sunset Orange Theme"></button>
-                    <button type="button" class="theme-swatch swatch-magenta" data-theme="magenta" title="Magenta Pink" aria-label="Magenta Pink Theme"></button>
-                    
-                    <!-- Custom Color Picker Trigger -->
-                    <label class="theme-swatch custom-picker-btn" for="custom-color-picker" title="Custom Color">
-                        <input type="color" id="custom-color-picker" value="#9333ea">
-                    </label>
+    <!-- Theme Color Picker Dropdown -->
+    <div class="theme-dropdown-wrapper">
+        <button id="theme-menu-toggle" class="theme-toggle-btn" title="Customize Accent Colors" aria-label="Customize Accent Colors">
+            ✏️
+        </button>
+        <div id="theme-dropdown-menu" class="theme-dropdown-menu">
+            <p class="dropdown-label">Choose Accent Theme</p>
+            <div class="theme-picker-container">
+                <button class="theme-swatch swatch-purple active" data-theme="purple" title="Royal Purple"></button>
+                <button class="theme-swatch swatch-teal" data-theme="teal" title="Ocean Teal"></button>
+                <button class="theme-swatch swatch-green" data-theme="green" title="Emerald Green"></button>
+                <button class="theme-swatch swatch-pink" data-theme="pink" title="Rose Pink"></button>
+                <button class="theme-swatch swatch-orange" data-theme="orange" title="Sunset Orange"></button>
+                <button class="theme-swatch swatch-magenta" data-theme="magenta" title="Magenta"></button>
+                
+                <div class="theme-swatch custom-picker-btn" title="Pick Custom Accent">
+                    <input type="color" id="custom-color-picker" value="#3B0764">
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
         <!-- Navigation Links -->
         <nav id="main-nav">
