@@ -285,16 +285,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --------------------------------------------------
-    // 6. STICKY NOTE SCRATCHPAD (CREATE & REMOVE NODES)
+    // 6. STICKY NOTE SCRATCHPAD (WITH LOCALSTORAGE)
     // --------------------------------------------------
     const noteInput = document.getElementById('note-input');
     const addNoteBtn = document.getElementById('add-note-btn');
     const stickyNoteList = document.getElementById('sticky-note-list');
 
-    function createStickyNote() {
-        if (!noteInput) return;
-        const textValue = noteInput.value.trim();
-        if (!textValue) return;
+    // Helper: Save current list of sticky notes to localStorage
+    function saveNotesToLocalStorage() {
+        if (!stickyNoteList) return;
+        const notes = [];
+        stickyNoteList.querySelectorAll('.sticky-card p').forEach(p => {
+            notes.push(p.textContent);
+        });
+        localStorage.setItem('dashboard_sticky_notes', JSON.stringify(notes));
+    }
+
+    // Helper: Render single sticky note element to DOM
+    function renderStickyNoteElement(textValue) {
+        if (!stickyNoteList) return;
 
         const li = document.createElement('li');
         li.className = 'sticky-card';
@@ -310,17 +319,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
         deleteBtn.addEventListener('click', () => {
             li.remove();
+            saveNotesToLocalStorage();
         });
 
         li.appendChild(p);
         li.appendChild(deleteBtn);
-        if (stickyNoteList) stickyNoteList.appendChild(li);
+        stickyNoteList.appendChild(li);
+    }
+
+    // Load saved sticky notes from localStorage on page load
+    function loadSavedNotes() {
+        const savedNotes = localStorage.getItem('dashboard_sticky_notes');
+        if (savedNotes) {
+            try {
+                const notesArray = JSON.parse(savedNotes);
+                if (Array.isArray(notesArray)) {
+                    notesArray.forEach(noteText => renderStickyNoteElement(noteText));
+                }
+            } catch (e) {
+                console.error('Error parsing stored sticky notes:', e);
+            }
+        }
+    }
+
+    function createStickyNote() {
+        if (!noteInput) return;
+        const textValue = noteInput.value.trim();
+        if (!textValue) return;
+
+        renderStickyNoteElement(textValue);
+        saveNotesToLocalStorage();
 
         noteInput.value = '';
     }
 
     // --------------------------------------------------
-    // 7. EVENT LISTENERS
+    // 7. EVENT LISTENERS & INITIALIZATION
     // --------------------------------------------------
     if (syncBtn) {
         syncBtn.addEventListener('click', fetchAssignmentsFromSheets);
@@ -351,6 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initial fetch on page load
+    // Initialize saved notes and sheet data on page load
+    loadSavedNotes();
     fetchAssignmentsFromSheets();
 });
