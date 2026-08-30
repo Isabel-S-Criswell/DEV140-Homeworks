@@ -144,10 +144,31 @@ header#main-header h1 {
     transform: scale(1.1);
 }
 
+/* VISUAL COLOR PRESET SWATCHES */
+.swatch-purple  { background-color: #3B0764; }
+.swatch-teal    { background-color: #0d9488; }
+.swatch-green   { background-color: #047857; }
+.swatch-pink    { background-color: #be123c; }
+.swatch-orange  { background-color: #c2410c; }
+.swatch-magenta { background-color: #a21caf; }
+
+/* VISUAL CUSTOM COLOR PICKER BUTTON */
+.custom-picker-btn {
+    position: relative;
+    background: conic-gradient(red, yellow, lime, cyan, blue, magenta, red);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .custom-picker-btn input[type="color"] {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    width: 200%;
+    height: 200%;
     opacity: 0;
-    width: 100%;
-    height: 100%;
     cursor: pointer;
 }
 
