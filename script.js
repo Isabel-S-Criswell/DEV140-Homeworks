@@ -10,81 +10,224 @@ document.addEventListener('DOMContentLoaded', () => {
         'AI125':   { name: 'Introduction to Applied AI for Data Analysis', color: '#7b2cbf' }
     };
 
-    // Global UI Theme Palettes
+   // Global UI Theme Palettes (Light & Dark Variants)
     const THEMES = {
         purple: {
-            '--bg-color': '#f8fafc',
-            '--card-bg': '#ffffff',
-            '--text-color': '#1e293b',
-            '--heading-color': '#3B0764',
-            '--accent-color': '#3B0764',
-            '--accent-hover': '#581c87',
-            '--border-color': '#e2e8f0',
-            '--subtext-color': '#64748b',
-            '--sticky-bg': '#fef08a',
-            '--sticky-text': '#1e293b'
+            light: {
+                '--bg-color': '#f8fafc',
+                '--card-bg': '#ffffff',
+                '--text-color': '#1e293b',
+                '--heading-color': '#3B0764',
+                '--accent-color': '#3B0764',
+                '--accent-hover': '#581c87',
+                '--border-color': '#e2e8f0',
+                '--subtext-color': '#64748b',
+                '--sticky-bg': '#fef08a',
+                '--sticky-text': '#1e293b'
+            },
+            dark: {
+                '--bg-color': '#0f0716',
+                '--card-bg': '#1a0c27',
+                '--text-color': '#f3e8ff',
+                '--heading-color': '#d8b4fe',
+                '--accent-color': '#9333ea',
+                '--accent-hover': '#a855f7',
+                '--border-color': '#3b0764',
+                '--subtext-color': '#c084fc',
+                '--sticky-bg': '#2e1065',
+                '--sticky-text': '#fef08a'
+            }
         },
         teal: {
-            '--bg-color': '#f0fdf4',
-            '--card-bg': '#ffffff',
-            '--text-color': '#0f172a',
-            '--heading-color': '#0d9488',
-            '--accent-color': '#0d9488',
-            '--accent-hover': '#0f766e',
-            '--border-color': '#ccfbf1',
-            '--subtext-color': '#115e59',
-            '--sticky-bg': '#ccfbf1',
-            '--sticky-text': '#0f172a'
+            light: {
+                '--bg-color': '#f0fdf4',
+                '--card-bg': '#ffffff',
+                '--text-color': '#0f172a',
+                '--heading-color': '#0d9488',
+                '--accent-color': '#0d9488',
+                '--accent-hover': '#0f766e',
+                '--border-color': '#ccfbf1',
+                '--subtext-color': '#115e59',
+                '--sticky-bg': '#ccfbf1',
+                '--sticky-text': '#0f172a'
+            },
+            dark: {
+                '--bg-color': '#042f2e',
+                '--card-bg': '#0f766e',
+                '--text-color': '#f0fdf4',
+                '--heading-color': '#5eead4',
+                '--accent-color': '#14b8a6',
+                '--accent-hover': '#2dd4bf',
+                '--border-color': '#115e59',
+                '--subtext-color': '#99f6e4',
+                '--sticky-bg': '#134e4a',
+                '--sticky-text': '#ccfbf1'
+            }
         },
         green: {
-            '--bg-color': '#f0fdf4',
-            '--card-bg': '#ffffff',
-            '--text-color': '#064e3b',
-            '--heading-color': '#047857',
-            '--accent-color': '#047857',
-            '--accent-hover': '#059669',
-            '--border-color': '#a7f3d0',
-            '--subtext-color': '#047857',
-            '--sticky-bg': '#a7f3d0',
-            '--sticky-text': '#064e3b'
+            light: {
+                '--bg-color': '#f0fdf4',
+                '--card-bg': '#ffffff',
+                '--text-color': '#064e3b',
+                '--heading-color': '#047857',
+                '--accent-color': '#047857',
+                '--accent-hover': '#059669',
+                '--border-color': '#a7f3d0',
+                '--subtext-color': '#047857',
+                '--sticky-bg': '#a7f3d0',
+                '--sticky-text': '#064e3b'
+            },
+            dark: {
+                '--bg-color': '#022c22',
+                '--card-bg': '#064e3b',
+                '--text-color': '#ecfdf5',
+                '--heading-color': '#6ee7b7',
+                '--accent-color': '#10b981',
+                '--accent-hover': '#34d399',
+                '--border-color': '#047857',
+                '--subtext-color': '#a7f3d0',
+                '--sticky-bg': '#065f46',
+                '--sticky-text': '#a7f3d0'
+            }
         },
         orange: {
-            '--bg-color': '#fff7ed',
-            '--card-bg': '#ffffff',
-            '--text-color': '#431407',
-            '--heading-color': '#c2410c',
-            '--accent-color': '#c2410c',
-            '--accent-hover': '#ea580c',
-            '--border-color': '#ffedd5',
-            '--subtext-color': '#9a3412',
-            '--sticky-bg': '#fed7aa',
-            '--sticky-text': '#431407'
+            light: {
+                '--bg-color': '#fff7ed',
+                '--card-bg': '#ffffff',
+                '--text-color': '#431407',
+                '--heading-color': '#c2410c',
+                '--accent-color': '#c2410c',
+                '--accent-hover': '#ea580c',
+                '--border-color': '#ffedd5',
+                '--subtext-color': '#9a3412',
+                '--sticky-bg': '#fed7aa',
+                '--sticky-text': '#431407'
+            },
+            dark: {
+                '--bg-color': '#270e04',
+                '--card-bg': '#431407',
+                '--text-color': '#fff7ed',
+                '--heading-color': '#ff8453',
+                '--accent-color': '#f97316',
+                '--accent-hover': '#fb923c',
+                '--border-color': '#7c2d12',
+                '--subtext-color': '#fdba74',
+                '--sticky-bg': '#7c2d12',
+                '--sticky-text': '#fed7aa'
+            }
         },
         pink: {
-            '--bg-color': '#fff1f2',
-            '--card-bg': '#ffffff',
-            '--text-color': '#4c0519',
-            '--heading-color': '#be123c',
-            '--accent-color': '#be123c',
-            '--accent-hover': '#e11d48',
-            '--border-color': '#fecdd3',
-            '--subtext-color': '#9f1239',
-            '--sticky-bg': '#fecdd3',
-            '--sticky-text': '#4c0519'
+            light: {
+                '--bg-color': '#fff1f2',
+                '--card-bg': '#ffffff',
+                '--text-color': '#4c0519',
+                '--heading-color': '#be123c',
+                '--accent-color': '#be123c',
+                '--accent-hover': '#e11d48',
+                '--border-color': '#fecdd3',
+                '--subtext-color': '#9f1239',
+                '--sticky-bg': '#fecdd3',
+                '--sticky-text': '#4c0519'
+            },
+            dark: {
+                '--bg-color': '#2a0410',
+                '--card-bg': '#4c0519',
+                '--text-color': '#fff1f2',
+                '--heading-color': '#fda4af',
+                '--accent-color': '#f43f5e',
+                '--accent-hover': '#fb7185',
+                '--border-color': '#881337',
+                '--subtext-color': '#fecdd3',
+                '--sticky-bg': '#881337',
+                '--sticky-text': '#fecdd3'
+            }
         },
         magenta: {
-            '--bg-color': '#fdf4ff',
-            '--card-bg': '#ffffff',
-            '--text-color': '#701a75',
-            '--heading-color': '#a21caf',
-            '--accent-color': '#a21caf',
-            '--accent-hover': '#c026d3',
-            '--border-color': '#f5d0fe',
-            '--subtext-color': '#86198f',
-            '--sticky-bg': '#f5d0fe',
-            '--sticky-text': '#701a75'
+            light: {
+                '--bg-color': '#fdf4ff',
+                '--card-bg': '#ffffff',
+                '--text-color': '#701a75',
+                '--heading-color': '#a21caf',
+                '--accent-color': '#a21caf',
+                '--accent-hover': '#c026d3',
+                '--border-color': '#f5d0fe',
+                '--subtext-color': '#86198f',
+                '--sticky-bg': '#f5d0fe',
+                '--sticky-text': '#701a75'
+            },
+            dark: {
+                '--bg-color': '#28062b',
+                '--card-bg': '#4a044e',
+                '--text-color': '#fdf4ff',
+                '--heading-color': '#f0abfc',
+                '--accent-color': '#d946ef',
+                '--accent-hover': '#e879f9',
+                '--border-color': '#701a75',
+                '--subtext-color': '#f5d0fe',
+                '--sticky-bg': '#701a75',
+                '--sticky-text': '#f5d0fe'
+            }
         }
     };
+
+    // Helper to apply variables depending on active mode (Light vs Dark)
+    function applyCurrentTheme() {
+        const isDark = document.body.classList.contains('dark-mode');
+        const modeKey = isDark ? 'dark' : 'light';
+        const activeTheme = localStorage.getItem('dashboard_accent_theme') || 'purple';
+        
+        const themeConfig = THEMES[activeTheme];
+        if (!themeConfig) return;
+
+        const targetVars = themeConfig[modeKey];
+        Object.keys(targetVars).forEach(key => {
+            document.documentElement.style.setProperty(key, targetVars[key]);
+        });
+    }
+
+    // Swatch Click Listener
+    swatches.forEach(swatch => {
+        swatch.addEventListener('click', () => {
+            const themeKey = swatch.getAttribute('data-theme');
+            if (!themeKey) return;
+
+            localStorage.setItem('dashboard_accent_theme', themeKey);
+            localStorage.removeItem('dashboard_custom_color');
+            
+            applyCurrentTheme();
+
+            swatches.forEach(s => s.classList.remove('active'));
+            swatch.classList.add('active');
+
+            if (themeDropdownMenu) {
+                themeDropdownMenu.classList.remove('show');
+            }
+        });
+    });
+
+    // Dark Mode Toggle Logic
+    const modeCheckbox = document.getElementById('mode-toggle-checkbox');
+
+    function setDarkMode(isDark) {
+        if (isDark) {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+        }
+
+        if (modeCheckbox) {
+            modeCheckbox.checked = isDark;
+        }
+
+        localStorage.setItem('dashboard_theme_mode', isDark ? 'dark' : 'light');
+        
+        // Re-calculate inline theme variables to match the new light/dark mode state
+        applyCurrentTheme();
+    }
+
+    // Initialize state on page load
+    const savedMode = localStorage.getItem('dashboard_theme_mode');
+    setDarkMode(savedMode === 'dark');
 
     let rawAssignments = [];
     let selectedWeek = 'ALL';
