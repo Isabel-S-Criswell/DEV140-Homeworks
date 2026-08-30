@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbyHUioa23K3yTAyzFLiH-G_jojG73XhzgPgel6j2hoJn2feCYS7WhrDkscZoWJgiWDq/exec';
+    const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbyHUioa23K3yTAyzFLiH-G_jojG73XhzgPgel6j2hoJn2feCYS7WhrDkscZoWJgiWDq/exechttps://script.google.com/macros/s/AKfycbyKsi6ihlH_2zhXgNdn2sNUPAVrfZhsKXm38u63Edr_18J9klwtlzXF8MNUZHBWamR2/exec';
 
     let rawAssignments = [];
     let selectedWeek = 'ALL';
