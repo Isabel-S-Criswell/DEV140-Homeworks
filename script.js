@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'AI125':   { name: 'Introduction to Applied AI for Data Analysis', color: '#7b2cbf' }
     };
 
-   // Global UI Theme Palettes (Light & Dark Variants)
+    // Global UI Theme Palettes (Light & Dark Variants)
     const THEMES = {
         purple: {
             light: {
@@ -170,8 +170,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Helper to apply variables depending on active mode (Light vs Dark)
+    // DOM Theme Element Selection
+    const modeCheckbox = document.getElementById('mode-toggle-checkbox');
+    const themeToggleBtn = document.getElementById('theme-menu-toggle');
+    const themeDropdownMenu = document.getElementById('theme-dropdown-menu');
+    const swatches = document.querySelectorAll('.theme-swatch');
+    const customColorInput = document.getElementById('custom-color-picker');
+
+    // Apply Palette CSS Variables based on Theme Name & Light/Dark State
     function applyCurrentTheme() {
+        const customColor = localStorage.getItem('dashboard_custom_color');
+        if (customColor) {
+            document.documentElement.style.setProperty('--heading-color', customColor);
+            document.documentElement.style.setProperty('--accent-color', customColor);
+            document.documentElement.style.setProperty('--accent-hover', customColor);
+            return;
+        }
+
         const isDark = document.body.classList.contains('dark-mode');
         const modeKey = isDark ? 'dark' : 'light';
         const activeTheme = localStorage.getItem('dashboard_accent_theme') || 'purple';
@@ -185,29 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Swatch Click Listener
-    swatches.forEach(swatch => {
-        swatch.addEventListener('click', () => {
-            const themeKey = swatch.getAttribute('data-theme');
-            if (!themeKey) return;
-
-            localStorage.setItem('dashboard_accent_theme', themeKey);
-            localStorage.removeItem('dashboard_custom_color');
-            
-            applyCurrentTheme();
-
-            swatches.forEach(s => s.classList.remove('active'));
-            swatch.classList.add('active');
-
-            if (themeDropdownMenu) {
-                themeDropdownMenu.classList.remove('show');
-            }
-        });
-    });
-
-    // Dark Mode Toggle Logic
-    const modeCheckbox = document.getElementById('mode-toggle-checkbox');
-
+    // Toggle Dark Mode
     function setDarkMode(isDark) {
         if (isDark) {
             document.body.classList.add('dark-mode');
@@ -220,15 +213,75 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         localStorage.setItem('dashboard_theme_mode', isDark ? 'dark' : 'light');
-        
-        // Re-calculate inline theme variables to match the new light/dark mode state
         applyCurrentTheme();
     }
 
-    // Initialize state on page load
+    // Theme Menu Dropdown Controls
+    if (themeToggleBtn && themeDropdownMenu) {
+        themeToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            themeDropdownMenu.classList.toggle('show');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!themeDropdownMenu.contains(e.target) && !themeToggleBtn.contains(e.target)) {
+                themeDropdownMenu.classList.remove('show');
+            }
+        });
+    }
+
+    // Swatch Picker Controls
+    swatches.forEach(swatch => {
+        swatch.addEventListener('click', () => {
+            const themeKey = swatch.getAttribute('data-theme');
+            if (!themeKey) return;
+
+            localStorage.setItem('dashboard_accent_theme', themeKey);
+            localStorage.removeItem('dashboard_custom_color');
+
+            swatches.forEach(s => s.classList.remove('active'));
+            swatch.classList.add('active');
+
+            applyCurrentTheme();
+
+            if (themeDropdownMenu) {
+                themeDropdownMenu.classList.remove('show');
+            }
+        });
+    });
+
+    // Custom Color Picker
+    if (customColorInput) {
+        customColorInput.addEventListener('input', (e) => {
+            const chosenColor = e.target.value;
+
+            document.documentElement.style.setProperty('--heading-color', chosenColor);
+            document.documentElement.style.setProperty('--accent-color', chosenColor);
+            document.documentElement.style.setProperty('--accent-hover', chosenColor);
+
+            swatches.forEach(s => s.classList.remove('active'));
+            if (customColorInput.parentElement) {
+                customColorInput.parentElement.classList.add('active');
+            }
+
+            localStorage.setItem('dashboard_custom_color', chosenColor);
+            localStorage.removeItem('dashboard_accent_theme');
+        });
+    }
+
+    if (modeCheckbox) {
+        modeCheckbox.addEventListener('change', (e) => {
+            setDarkMode(e.target.checked);
+        });
+    }
+
+    // Initialize saved theme mode state
     const savedMode = localStorage.getItem('dashboard_theme_mode');
     setDarkMode(savedMode === 'dark');
 
+    // --------------------------------------------------
+    // ASSIGNMENTS & SHEETS INTEGRATION
+    // --------------------------------------------------
     let rawAssignments = [];
     let selectedWeek = 'ALL';
 
@@ -237,14 +290,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const courseFilter = document.getElementById('course-filter');
     const statusFilter = document.getElementById('status-filter');
 
-    // Case-insensitive key lookup helper
     function getProp(obj, key) {
         if (!obj) return '';
         const foundKey = Object.keys(obj).find(k => k.toLowerCase() === key.toLowerCase());
         return foundKey ? obj[foundKey] : '';
     }
 
-    // Helper: Determine if an assignment item is marked complete
     function isItemComplete(item) {
         const progressVal = String(getProp(item, 'progress')).trim().toLowerCase();
         const completeVal = String(getProp(item, 'complete')).trim().toLowerCase();
@@ -256,24 +307,18 @@ document.addEventListener('DOMContentLoaded', () => {
                statusVal === 'completed';
     }
 
-    // --------------------------------------------------
-    // 1. CALCULATE CURRENT ACADEMIC WEEK DYNAMICALLY
-    // --------------------------------------------------
     function getCurrentAcademicWeek() {
         const termStart = new Date('2026-07-06T00:00:00');
         const today = new Date();
         const diffInMs = today - termStart;
         const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-        
+
         let currentWeek = Math.floor(diffInDays / 7) + 1;
         if (currentWeek < 1) currentWeek = 1;
         if (currentWeek > 11) currentWeek = 11;
         return currentWeek;
     }
 
-    // --------------------------------------------------
-    // 2. FETCH FROM APPS SCRIPT
-    // --------------------------------------------------
     async function fetchAssignmentsFromSheets() {
         if (assignmentList) {
             assignmentList.innerHTML = `<li class="loading-state">⏳ Connecting to Google Sheets...</li>`;
@@ -281,19 +326,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await fetch(SHEETS_API_URL, { redirect: 'follow' });
-            
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
-            
             const unparsedRows = Array.isArray(data) ? data : (data.data || data.rows || []);
+            
             rawAssignments = unparsedRows.filter(item => {
                 const title = getProp(item, 'assignment') || getProp(item, 'title');
                 return title && String(title).trim().toLowerCase() !== 'empty';
             });
-            
+
             populateCourseDropdown(rawAssignments);
             updateTermProgress(rawAssignments);
             renderFilteredAssignments();
@@ -316,9 +360,6 @@ document.addEventListener('DOMContentLoaded', () => {
         courseFilter.innerHTML = courses.map(c => `<option value="${c}">${c === 'ALL' ? 'All Courses' : c}</option>`).join('');
     }
 
-    // --------------------------------------------------
-    // 3. DYNAMIC TERM PROGRESS & WEEK BADGE
-    // --------------------------------------------------
     function updateTermProgress(data) {
         const currentWeek = getCurrentAcademicWeek();
         const totalTasks = data.length;
@@ -338,9 +379,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --------------------------------------------------
-    // 4. RENDER FILTERED ASSIGNMENTS TO DOM
-    // --------------------------------------------------
     function renderFilteredAssignments() {
         if (!assignmentList) return;
         assignmentList.innerHTML = '';
@@ -351,10 +389,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const filtered = rawAssignments.filter(item => {
             const itemCourse = getProp(item, 'class') || getProp(item, 'course');
             const itemWeek = getProp(item, 'week');
-            
+
             const matchesCourse = selectedCourse === 'ALL' || itemCourse === selectedCourse;
             const matchesWeek = selectedWeek === 'ALL' || String(itemWeek) === String(selectedWeek);
-            
+
             const isDone = isItemComplete(item);
             const matchesStatus = selectedStatus === 'ALL' || 
                 (selectedStatus === 'Complete' && isDone) || 
@@ -371,13 +409,12 @@ document.addEventListener('DOMContentLoaded', () => {
         filtered.forEach(item => {
             const li = document.createElement('li');
             const isDone = isItemComplete(item);
-            
+
             const priorityVal = getProp(item, 'priority');
             const isHighPriority = String(priorityVal).toLowerCase() === 'high';
 
             const title = getProp(item, 'assignment') || getProp(item, 'title') || getProp(item, 'name') || 'Untitled Assignment';
             const courseCode = (getProp(item, 'class') || getProp(item, 'course') || 'General').trim();
-            
             const courseInfo = COURSE_CONFIG[courseCode] || { name: courseCode, color: '#6c757d' };
 
             const weekNum = getProp(item, 'week') || '-';
@@ -385,7 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             li.className = `assignment-card ${isDone ? 'complete' : ''} ${isHighPriority ? 'high-priority' : ''}`;
             li.style.borderLeftColor = courseInfo.color;
-            
+
             li.innerHTML = `
                 <div class="assignment-details">
                     <strong>${title}</strong>
@@ -406,79 +443,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-// --------------------------------------------------
-    // 5. THEME DROPDOWN TOGGLE & COLOR PICKER CONTROLS
     // --------------------------------------------------
-    const themeToggleBtn = document.getElementById('theme-menu-toggle');
-    const themeDropdownMenu = document.getElementById('theme-dropdown-menu');
-    const swatches = document.querySelectorAll('.theme-swatch');
-    const customColorInput = document.getElementById('custom-color-picker');
-
-    if (themeToggleBtn && themeDropdownMenu) {
-        themeToggleBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            themeDropdownMenu.classList.toggle('show');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!themeDropdownMenu.contains(e.target) && !themeToggleBtn.contains(e.target)) {
-                themeDropdownMenu.classList.remove('show');
-            }
-        });
-    }
-
-    function applyThemePalette(themeKey) {
-        const themeVars = THEMES[themeKey];
-        if (!themeVars) return;
-
-        const isDark = document.body.classList.contains('dark-mode');
-
-        Object.keys(themeVars).forEach(key => {
-            // If in Dark Mode, skip overriding background/card variables so dark styles take priority
-            if (isDark && (key === '--bg-color' || key === '--card-bg' || key === '--text-color')) {
-                return;
-            }
-            document.documentElement.style.setProperty(key, themeVars[key]);
-        });
-
-        localStorage.setItem('dashboard_accent_theme', themeKey);
-    }
-
-    swatches.forEach(swatch => {
-        swatch.addEventListener('click', () => {
-            const themeKey = swatch.getAttribute('data-theme');
-            if (!themeKey) return;
-
-            applyThemePalette(themeKey);
-
-            swatches.forEach(s => s.classList.remove('active'));
-            swatch.classList.add('active');
-
-            if (themeDropdownMenu) {
-                themeDropdownMenu.classList.remove('show');
-            }
-        });
-    });
-
-    if (customColorInput) {
-        customColorInput.addEventListener('input', (e) => {
-            const chosenColor = e.target.value;
-
-            document.documentElement.style.setProperty('--heading-color', chosenColor);
-            document.documentElement.style.setProperty('--accent-color', chosenColor);
-            document.documentElement.style.setProperty('--accent-hover', chosenColor);
-            
-            swatches.forEach(s => s.classList.remove('active'));
-            if (customColorInput.parentElement) {
-                customColorInput.parentElement.classList.add('active');
-            }
-
-            localStorage.setItem('dashboard_custom_color', chosenColor);
-            localStorage.removeItem('dashboard_accent_theme');
-        });
-    }
-    // --------------------------------------------------
-    // 6. STICKY NOTE SCRATCHPAD (WITH LOCALSTORAGE)
+    // STICKY NOTE SCRATCHPAD
     // --------------------------------------------------
     const noteInput = document.getElementById('note-input');
     const addNoteBtn = document.getElementById('add-note-btn');
@@ -543,9 +509,7 @@ document.addEventListener('DOMContentLoaded', () => {
         noteInput.value = '';
     }
 
-    // --------------------------------------------------
-    // 7. EVENT LISTENERS & INITIALIZATION
-    // --------------------------------------------------
+    // Attach Dashboard Event Listeners
     if (syncBtn) {
         syncBtn.addEventListener('click', fetchAssignmentsFromSheets);
     }
@@ -567,7 +531,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (addNoteBtn && noteInput) {
         addNoteBtn.addEventListener('click', createStickyNote);
-        
         noteInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 createStickyNote();
@@ -575,48 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-// --------------------------------------------------
-    // 8. LIGHT / DARK MODE TOGGLE (FUNCTIONAL & PERSISTENT)
-    // --------------------------------------------------
-    const modeCheckbox = document.getElementById('mode-toggle-checkbox');
-
-    function setDarkMode(isDark) {
-        if (isDark) {
-            document.body.classList.add('dark-mode');
-            // Remove inline overrides on bg/card so CSS class rules work
-            document.documentElement.style.removeProperty('--bg-color');
-            document.documentElement.style.removeProperty('--card-bg');
-            document.documentElement.style.removeProperty('--text-color');
-        } else {
-            document.body.classList.remove('dark-mode');
-            // Re-apply light palette theme values
-            const currentTheme = localStorage.getItem('dashboard_accent_theme') || 'purple';
-            if (THEMES[currentTheme]) {
-                applyThemePalette(currentTheme);
-            }
-        }
-
-        if (modeCheckbox) {
-            modeCheckbox.checked = isDark;
-        }
-
-        localStorage.setItem('dashboard_theme_mode', isDark ? 'dark' : 'light');
-    }
-
-    // Initialize saved mode preference
-    const savedMode = localStorage.getItem('dashboard_theme_mode');
-    if (savedMode === 'dark') {
-        setDarkMode(true);
-    } else {
-        setDarkMode(false);
-    }
-
-    if (modeCheckbox) {
-        modeCheckbox.addEventListener('change', (e) => {
-            setDarkMode(e.target.checked);
-        });
-    }
-    // Initialize saved notes and sheet data on page load
+    // Initialize Notes and Fetch Sheets Data
     loadSavedNotes();
     fetchAssignmentsFromSheets();
 });
