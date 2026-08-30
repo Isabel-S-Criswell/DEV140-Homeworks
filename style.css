@@ -1,15 +1,28 @@
 /* CSS VARIABLES FOR THEMING */
 :root {
-    --bg-color: #f8fafc;
+    --bg-color: #f1f5f9;
     --card-bg: #ffffff;
     --text-color: #1e293b;
     --heading-color: #3B0764;
     --accent-color: #3B0764;
     --accent-hover: #581c87;
-    --border-color: #e2e8f0;
+    --border-color: #cbd5e1;
     --subtext-color: #64748b;
     --sticky-bg: #fef08a;
     --sticky-text: #1e293b;
+    --input-bg: #ffffff;
+}
+
+/* DARK MODE OVERRIDES */
+body.dark-mode {
+    --bg-color: #0f172a;
+    --card-bg: #1e293b;
+    --text-color: #f8fafc;
+    --border-color: #334155;
+    --subtext-color: #94a3b8;
+    --sticky-bg: #334155;
+    --sticky-text: #fef08a;
+    --input-bg: #0f172a;
 }
 
 /* BASE STYLES */
@@ -50,7 +63,7 @@ header#main-header h1 {
 .header-right-controls {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
 }
 
 #main-nav ul {
@@ -67,6 +80,27 @@ header#main-header h1 {
     font-weight: 500;
 }
 
+/* DARK MODE TOGGLE BUTTON */
+.mode-toggle-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.mode-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.05);
+}
+
 /* THEME DROPDOWN TOGGLE & FLOATING MENU */
 .theme-dropdown-wrapper {
     position: relative;
@@ -74,8 +108,8 @@ header#main-header h1 {
 }
 
 .theme-toggle-btn {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     color: #ffffff;
     border-radius: 50%;
     width: 36px;
@@ -88,7 +122,7 @@ header#main-header h1 {
 }
 
 .theme-toggle-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.35);
     transform: scale(1.08);
 }
 
@@ -99,7 +133,7 @@ header#main-header h1 {
     right: 0;
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
     border-radius: 8px;
     padding: 12px;
     z-index: 1000;
@@ -178,7 +212,8 @@ header#main-header h1 {
     background-color: var(--card-bg);
     border-bottom: 1px solid var(--border-color);
     padding: 15px 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    transition: background-color 0.3s ease;
 }
 
 .term-progress-inner {
@@ -198,7 +233,8 @@ header#main-header h1 {
 }
 
 .progress-bar-track {
-    background: #e2e8f0;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
     height: 14px;
     border-radius: 7px;
     overflow: hidden;
@@ -222,7 +258,7 @@ header#main-header h1 {
     gap: 30px;
 }
 
-/* TOP SECTION: ABOUT ME, FAVORITE TOPICS, STICKY NOTES SIDE-BY-SIDE */
+/* TOP SECTION CARDS */
 .top-cards-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -235,7 +271,7 @@ header#main-header h1 {
     border-radius: 12px;
     padding: 24px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 .profile-img {
@@ -269,8 +305,8 @@ header#main-header h1 {
     background-color: var(--sticky-bg);
     color: var(--sticky-text);
     padding: 12px;
-    border-radius: 4px;
-    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 6px;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -278,7 +314,7 @@ header#main-header h1 {
     word-break: break-word;
     transform: rotate(-1deg);
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
-    border: none;
+    border: 1px solid var(--border-color);
 }
 
 .sticky-card p {
@@ -294,7 +330,7 @@ header#main-header h1 {
 
 .sticky-card:hover {
     transform: scale(1.04) rotate(0deg);
-    box-shadow: 4px 8px 12px rgba(0, 0, 0, 0.12);
+    box-shadow: 4px 8px 12px rgba(0, 0, 0, 0.2);
 }
 
 .delete-note-btn {
@@ -302,7 +338,7 @@ header#main-header h1 {
     background: transparent;
     border: none;
     color: var(--sticky-text);
-    opacity: 0.6;
+    opacity: 0.65;
     font-size: 1.1rem;
     font-weight: bold;
     cursor: pointer;
@@ -315,7 +351,7 @@ header#main-header h1 {
     opacity: 1;
 }
 
-/* BOTTOM SECTION: LIVE ASSIGNMENTS UNDERNEATH */
+/* BOTTOM SECTION ASSIGNMENTS */
 .assignments-full-width-card {
     width: 100%;
     box-sizing: border-box;
@@ -337,7 +373,7 @@ select, input[type="text"] {
     padding: 8px 12px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    background: var(--card-bg);
+    background: var(--input-bg);
     color: var(--text-color);
 }
 
@@ -425,7 +461,7 @@ footer {
     font-size: 0.85rem;
 }
 
-/* RESPONSIVE LAYOUT BREAKPOINTS */
+/* RESPONSIVE LAYOUT */
 @media (max-width: 900px) {
     .top-cards-row {
         grid-template-columns: 1fr;
