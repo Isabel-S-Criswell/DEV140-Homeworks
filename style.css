@@ -1,8 +1,7 @@
 /* =========================================================
    PALETTE & BASE STYLES
-   - Background: Eggshell (#FEF9E7)
-   - Cards / Containers: Soft Lilac (#D8B4FE)
-   - Text & Header: Dark Purple (#3B0764)
+   - Background: Eggshell (#FEF9E7) | Container: Soft Lilac (#D8B4FE)
+   - Text & Headers: Dark Purple (#3B0764) | Accent: Purple (#A855F7)
    ========================================================= */
 
 * {
@@ -18,69 +17,11 @@ body {
   padding: 0;
 }
 
-h1, h2 {
+h1, h2, h3 {
   font-family: 'Playfair Display', Georgia, serif;
   color: #3B0764;
   margin-top: 0;
   margin-bottom: 16px;
-}
-
-/* =========================================================
-   1. FLEXBOX NAVIGATION (#main-header & #main-nav)
-   ========================================================= */
-#main-header {
-  background-color: #3B0764;
-  color: #FEF9E7;
-  padding: 24px;
-  text-align: center;
-  border-bottom: 4px solid #D8B4FE;
-  margin-bottom: 32px;
-}
-
-#main-header h1 {
-  color: #FEF9E7;
-  margin-bottom: 16px;
-}
-
-#main-nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column; /* Mobile first stack */
-  align-items: center;
-  gap: 12px;
-}
-
-#main-nav a {
-  color: #D8B4FE;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1.1rem;
-}
-
-#main-nav a:hover {
-  color: #FEF9E7;
-}
-
-/* =========================================================
-   2. CARD & IMAGE STYLING (.card & .profile-img)
-   ========================================================= */
-.card {
-  background-color: #D8B4FE;
-  padding: 24px;
-  border: 2px solid #C084FC;
-  border-radius: 16px;
-  height: 100%;
-}
-
-.profile-img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 12px;
-  border: 3px solid #3B0764;
-  margin-top: 16px;
-  display: block;
 }
 
 p {
@@ -93,14 +34,8 @@ p {
   margin-bottom: 16px;
 }
 
-ol {
-  padding-left: 24px;
-}
-
-li {
-  margin-bottom: 8px;
-  font-weight: 500;
-}
+ol { padding-left: 24px; }
+li { margin-bottom: 8px; font-weight: 500; }
 
 footer {
   text-align: center;
@@ -110,28 +45,141 @@ footer {
 }
 
 /* =========================================================
+   1. NAVIGATION & CARDS
+   ========================================================= */
+#main-header {
+  background-color: #3B0764;
+  color: #FEF9E7;
+  padding: 24px;
+  text-align: center;
+  border-bottom: 4px solid #D8B4FE;
+  margin-bottom: 32px;
+}
+
+#main-header h1 { color: #FEF9E7; margin-bottom: 16px; }
+
+#main-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+#main-nav a {
+  color: #D8B4FE;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+#main-nav a:hover { color: #FEF9E7; }
+
+.card {
+  background-color: #D8B4FE;
+  padding: 24px;
+  border: 2px solid #C084FC;
+  border-radius: 16px;
+  height: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.profile-img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  border: 3px solid #3B0764;
+  margin-top: 16px;
+  display: block;
+}
+
+/* =========================================================
+   2. INTERACTIVE DASHBOARD STYLES (Homework 7)
+   ========================================================= */
+.dashboard-module {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #A855F7;
+}
+
+.dashboard-module:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.btn-primary, .btn-danger {
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #FEF9E7;
+  transition: opacity 0.2s;
+}
+
+.btn-primary { background-color: #3B0764; padding: 10px 16px; }
+.btn-danger { background-color: #991B1B; padding: 6px 12px; font-size: 0.85rem; }
+.btn-primary:hover, .btn-danger:hover { opacity: 0.85; }
+
+.input-flex, .color-picker-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+#feature-input {
+  flex-grow: 1;
+  padding: 8px 12px;
+  border: 1px solid #A855F7;
+  border-radius: 6px;
+  background-color: #FEF9E7;
+  color: #3B0764;
+}
+
+input[type="color"] {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #3B0764;
+  border-radius: 6px;
+  cursor: pointer;
+  background: none;
+}
+
+#color-hex-label {
+  font-family: monospace;
+  background-color: #FEF9E7;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px dashed #A855F7;
+  font-weight: 600;
+}
+
+.dynamic-list { list-style: none; padding: 0; margin-top: 12px; }
+.dynamic-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #FEF9E7;
+  padding: 8px 12px;
+  border: 1px solid #A855F7;
+  border-radius: 6px;
+}
+
+/* =========================================================
    3. RESPONSIVE GRID & MEDIA QUERIES
    ========================================================= */
-
-/* Mobile Default (320px) */
 .grid-container {
   display: block;
   padding: 0 16px;
   max-width: 100%;
 }
 
-.card {
-  margin-bottom: 24px;
-}
+.card { margin-bottom: 24px; }
 
-/* Media Query 1: Tablet Breakpoint (768px) */
 @media (min-width: 768px) {
-  #main-nav ul {
-    flex-direction: row;
-    justify-content: center;
-    gap: 32px;
-  }
-
+  #main-nav ul { flex-direction: row; justify-content: center; gap: 32px; }
   .grid-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -140,21 +188,10 @@ footer {
     max-width: 900px;
     margin: 0 auto;
   }
-
-  .card {
-    margin-bottom: 0;
-  }
+  .card { margin-bottom: 0; }
 }
 
-/* Media Query 2: Desktop Breakpoint (1200px) */
 @media (min-width: 1200px) {
-  .grid-container {
-    max-width: 1120px;
-    gap: 32px;
-    padding: 0 48px;
-  }
-
-  #main-header {
-    padding: 32px 48px;
-  }
+  .grid-container { max-width: 1120px; gap: 32px; padding: 0 48px; }
+  #main-header { padding: 32px 48px; }
 }
