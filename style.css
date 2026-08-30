@@ -13,16 +13,81 @@
     --input-bg: #ffffff;
 }
 
-/* DARK MODE OVERRIDES */
+/* MODERN SLIDER TOGGLE SWITCH */
+.theme-switch {
+    position: relative;
+    display: inline-block;
+    width: 56px;
+    height: 28px;
+}
+
+.theme-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    transition: 0.3s ease;
+    border-radius: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: #ffffff;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 50%;
+    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input:checked + .slider {
+    background-color: #1e293b;
+    border-color: #334155;
+}
+
+input:checked + .slider:before {
+    transform: translateX(28px);
+    background-color: #f8fafc;
+}
+
+.slider .icon {
+    font-size: 12px;
+    user-select: none;
+    z-index: 1;
+}
+
+.sun-icon { margin-left: 2px; }
+.moon-icon { margin-right: 2px; }
+}
+
+/* DARK MODE BASE OVERRIDES */
 body.dark-mode {
-    --bg-color: #0f172a;
-    --card-bg: #1e293b;
-    --text-color: #f8fafc;
-    --border-color: #334155;
-    --subtext-color: #94a3b8;
-    --sticky-bg: #334155;
-    --sticky-text: #fef08a;
-    --input-bg: #0f172a;
+    --bg-color: #0f172a !important;
+    --card-bg: #1e293b !important;
+    --text-color: #f8fafc !important;
+    --border-color: #334155 !important;
+    --subtext-color: #94a3b8 !important;
+    --sticky-bg: #1e293b !important;
+    --sticky-text: #fef08a !important;
+    --input-bg: #0f172a !important;
 }
 
 /* BASE STYLES */
