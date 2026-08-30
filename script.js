@@ -2,6 +2,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbw25hwFfwblp7pRj0uEhot_CXxtWwBTg6IfAq1JiGHUsrIUWxddt2I2G1idOuhNamA4/exec';
 
+    // Course mapping for full names and custom badge colors
+    const COURSE_CONFIG = {
+        'CTIA170': { name: 'CompTIA A+ Core 2 and Certification Practice', color: '#e63946' }, // Red
+        'DEV140':  { name: 'Web Development', color: '#2a9d8f' },                             // Green
+        'DEV150':  { name: 'Linux & Command Line Foundations', color: '#7b2cbf' },            // Purple
+        'AI125':   { name: 'Introduction to Applied AI for Data Analysis', color: '#7b2cbf' } // Purple
+    };
+
     let rawAssignments = [];
     let selectedWeek = 'ALL';
 
@@ -153,7 +161,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const isHighPriority = String(priorityVal).toLowerCase() === 'high';
 
             const title = getProp(item, 'assignment') || getProp(item, 'title') || getProp(item, 'name') || 'Untitled Assignment';
-            const courseName = getProp(item, 'class') || getProp(item, 'course') || 'General';
+            const courseCode = (getProp(item, 'class') || getProp(item, 'course') || 'General').trim();
+            
+            // Map course code to full title and background color badge
+            const courseInfo = COURSE_CONFIG[courseCode] || { name: courseCode, color: '#6c757d' };
+
             const weekNum = getProp(item, 'week') || '-';
             const dueDate = getProp(item, 'date due') || getProp(item, 'due date') || getProp(item, 'due') || 'N/A';
 
@@ -163,8 +175,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="assignment-details">
                     <strong>${title}</strong>
                     <div class="assignment-meta">
-                        📚 <strong>${courseName}</strong> | Week ${weekNum} | Due: ${dueDate}
-                        ${priorityVal ? ` | Priority: <em>${priorityVal}</em>` : ''}
+                        <span class="course-tag" style="background-color: ${courseInfo.color}; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                            ${courseInfo.name} (${courseCode})
+                        </span> 
+                        <span class="meta-item">📅 Week ${weekNum} | Due: ${dueDate}</span>
+                        ${priorityVal ? `<span class="meta-item">| Priority: <em>${priorityVal}</em></span>` : ''}
                     </div>
                 </div>
                 <span class="badge ${isDone ? 'badge-complete' : 'badge-pending'}">

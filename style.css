@@ -206,7 +206,7 @@ input[type="color"] {
 
 .progress-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #6366f1, #a855f7);
+  background: linear-gradient(45deg, #6366f1, #a855f7);
   transition: width 0.5s ease-in-out;
 }
 
@@ -256,8 +256,8 @@ input[type="color"] {
 }
 
 .week-btn {
-  background: #f1f5f9;
-  border: 1px solid #cbd5e1;
+  background: #fcf7de;
+  border: 1px solid #f6cbff;
   padding: 5px 10px;
   border-radius: 14px;
   cursor: pointer;
@@ -319,6 +319,24 @@ input[type="color"] {
   padding: 12px;
   border-radius: 6px;
   border: 1px dashed #A855F7;
+}
+
+.course-tag {
+    display: inline-block;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-right: 6px;
+}
+
+.assignment-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
 }
 
 /* =========================================================
