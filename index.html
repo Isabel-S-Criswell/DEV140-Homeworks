@@ -47,19 +47,19 @@
         </section>
 
         <!-- Section 3: Homework 7 Dashboard -->
-       <section id="hw7-dashboard" class="card">
+      <section id="hw7-dashboard" class="card">
     <h2>Academic Planner & Assignment Hub</h2>
 
-    <!-- Term & Week Progress Tracker -->
+    <!-- Dynamic Term & Week Progress Tracker -->
     <div class="dashboard-module">
         <div class="progress-header">
-            <h3>Term 1 Progress (Weeks 1–11)</h3>
-            <span id="week-badge" class="badge">Week 1 of 11</span>
+            <h3 id="term-header">Term Progress</h3>
+            <span id="week-badge" class="badge">Calculating...</span>
         </div>
         <div class="progress-bar-track">
             <div id="term-progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
         </div>
-        <p id="term-status-text" class="subtext">Syncing assignment completion rates...</p>
+        <p id="term-status-text" class="subtext">Click "Sync Sheets Data" to pull live coursework...</p>
     </div>
 
     <!-- Live Google Sheets Assignment Viewer -->
@@ -70,7 +70,6 @@
         <div class="filter-bar">
             <select id="course-filter">
                 <option value="ALL">All Courses</option>
-                <!-- Dynamically populated from your sheet (DEV140, DEV150, etc.) -->
             </select>
 
             <select id="status-filter">
@@ -95,24 +94,21 @@
             <button class="week-btn" data-week="8">W8</button>
             <button class="week-btn" data-week="9">W9</button>
             <button class="week-btn" data-week="10">W10</button>
-            <button class="week-btn" data-week="11">Finals</button>
+            <button class="week-btn" data-week="11">Finals (W11)</button>
         </div>
 
         <!-- Dynamic Output List -->
         <ul id="sheet-assignment-list" class="dynamic-list">
-            <li class="loading-state">Click "Sync Sheets Data" to load assignments...</li>
+            <li class="loading-state">Click "Sync Sheets Data" above to fetch your assignments!</li>
         </ul>
     </div>
 
-    <!-- Live Accent Customizer -->
+    <!-- Theme Customizer -->
     <div class="dashboard-module">
-        <h3>Theme Customizer</h3>
-        <label for="accent-color-input">Customize dashboard accent color:</label>
+        <h3>Dashboard Theme Customizer</h3>
+        <label for="accent-color-input">Type a color name or hex code to change dashboard background live:</label>
         <div class="color-picker-container">
-            <input type="text" id="accent-color-input" placeholder="e.g., lavender or #d8b4fe">
-        </div>
-        <div id="accent-preview-box">
-            <p>Accent preview updates live!</p>
+            <input type="text" id="accent-color-input" placeholder="e.g., #f3e8ff, lavender, #e0f2fe">
         </div>
     </div>
 </section>

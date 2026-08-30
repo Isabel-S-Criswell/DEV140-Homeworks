@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // 🔗 PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
-    const SHEETS_API_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+    const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbyHUioa23K3yTAyzFLiH-G_jojG73XhzgPgel6j2hoJn2feCYS7WhrDkscZoWJgiWDq/exec';
 
     let rawAssignments = [];
     let selectedWeek = 'ALL';
@@ -12,26 +11,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusFilter = document.getElementById('status-filter');
 
     // --------------------------------------------------
-    // 1. FETCH API DATA FROM GOOGLE SHEETS
+    // 1. CALCULATE CURRENT ACADEMIC WEEK DYNAMICALLY
+    // --------------------------------------------------
+    function getCurrentAcademicWeek() {
+        // Term start date: Monday, July 6, 2026
+        const termStart = new Date('2026-07-06T00:00:00');
+        const today = new Date();
+        const diffInMs = today - termStart;
+        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+        
+        let currentWeek = Math.floor(diffInDays / 7) + 1;
+        if (currentWeek < 1) currentWeek = 1;
+        if (currentWeek > 11) currentWeek = 11;
+        return currentWeek;
+    }
+
+    // --------------------------------------------------
+    // 2. FETCH FROM APPS SCRIPT (WITH REDIRECT HANDLING)
     // --------------------------------------------------
     async function fetchAssignmentsFromSheets() {
-        if (!SHEETS_API_URL || SHEETS_API_URL.includes('YOUR_GOOGLE_APPS_SCRIPT')) {
-            assignmentList.innerHTML = `<li class="assignment-card">⚠️ Paste your Apps Script Web App URL into line 4 of script.js</li>`;
-            return;
-        }
-
-        assignmentList.innerHTML = `<li class="loading-state">Syncing live planner data...</li>`;
+        assignmentList.innerHTML = `<li class="loading-state">⏳ Connecting to Google Sheets...</li>`;
 
         try {
-            const response = await fetch(SHEETS_API_URL);
+            // redirect: 'follow' is required for Google Apps Script execution URLs
+            const response = await fetch(SHEETS_API_URL, { redirect: 'follow' });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
             rawAssignments = await response.json();
+            
+            console.log("Successfully fetched data rows:", rawAssignments.length);
 
             populateCourseDropdown(rawAssignments);
             updateTermProgress(rawAssignments);
             renderFilteredAssignments();
         } catch (error) {
             console.error('Error fetching sheet data:', error);
-            assignmentList.innerHTML = `<li class="assignment-card">❌ Failed to sync data. Verify Web App permission is set to "Anyone".</li>`;
+            assignmentList.innerHTML = `
+                <li class="assignment-card">
+                    ❌ <strong>Sync Failed:</strong> ${error.message}.<br>
+                    Make sure your Web App deployment is set to "Anyone" access.
+                </li>`;
         }
     }
 
@@ -42,31 +64,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --------------------------------------------------
-    // 2. DYNAMIC TERM PROGRESS CALCULATOR (Rubric Item 1 & 2)
+    // 3. DYNAMIC TERM PROGRESS & WEEK BADGE
     // --------------------------------------------------
     function updateTermProgress(data) {
-        if (!data || data.length === 0) return;
-
+        const currentWeek = getCurrentAcademicWeek();
         const totalTasks = data.length;
-        const completedTasks = data.filter(item => 
-            item.Progress === 'Complete' || item.Complete === 'TRUE' || item.Complete === true
-        ).length;
+        
+        const completedTasks = data.filter(item => {
+            const progressVal = (item.Progress || '').toString().trim().toLowerCase();
+            const completeVal = (item.Complete || '').toString().trim().toLowerCase();
+            return progressVal === 'complete' || completeVal === 'true';
+        }).length;
 
-        const percentage = Math.round((completedTasks / totalTasks) * 100);
+        const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
         const fillBar = document.getElementById('term-progress-fill');
         const statusText = document.getElementById('term-status-text');
         const badgeText = document.getElementById('week-badge');
+        const termHeader = document.getElementById('term-header');
 
         if (fillBar && statusText && badgeText) {
-            fillBar.style.width = `${percentage}%`;
-            badgeText.textContent = `${completedTasks} / ${totalTasks} Completed`;
-            statusText.textContent = `${percentage}% of overall term coursework completed across all 4 courses.`;
+            fillBar.style.width = `${completionPercentage}%`;
+            if (termHeader) termHeader.textContent = `Term Progress (Week ${currentWeek} of 11)`;
+            badgeText.textContent = `Week ${currentWeek} | ${completedTasks}/${totalTasks} Tasks Done`;
+            statusText.textContent = `${completionPercentage}% of overall term coursework completed (${completedTasks} of ${totalTasks} assignments marked Complete).`;
         }
     }
 
     // --------------------------------------------------
-    // 3. RENDER FILTERED DOM NODES (Rubric Item 3)
+    // 4. RENDER FILTERED ASSIGNMENTS TO DOM
     // --------------------------------------------------
     function renderFilteredAssignments() {
         assignmentList.innerHTML = '';
@@ -78,7 +104,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const matchesCourse = selectedCourse === 'ALL' || item.Class === selectedCourse;
             const matchesWeek = selectedWeek === 'ALL' || String(item.Week) === String(selectedWeek);
             
-            const isCompleted = item.Progress === 'Complete' || item.Complete === 'TRUE';
+            const isCompleted = (item.Progress || '').toString().trim().toLowerCase() === 'complete' || 
+                                (item.Complete || '').toString().trim().toLowerCase() === 'true';
+
             const matchesStatus = selectedStatus === 'ALL' || 
                 (selectedStatus === 'Complete' && isCompleted) || 
                 (selectedStatus === 'Pending' && !isCompleted);
@@ -87,20 +115,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (filtered.length === 0) {
-            assignmentList.innerHTML = `<li class="assignment-card">No assignments found matching the selected filters.</li>`;
+            assignmentList.innerHTML = `<li class="assignment-card">No assignments found for Week ${selectedWeek} / ${selectedCourse}.</li>`;
             return;
         }
 
         filtered.forEach(item => {
             const li = document.createElement('li');
-            const isDone = item.Progress === 'Complete' || item.Complete === 'TRUE';
+            const isDone = (item.Progress || '').toString().trim().toLowerCase() === 'complete' || 
+                           (item.Complete || '').toString().trim().toLowerCase() === 'true';
             const isHighPriority = item.Priority === 'High';
 
             li.className = `assignment-card ${isDone ? 'complete' : ''} ${isHighPriority ? 'high-priority' : ''}`;
             
             li.innerHTML = `
                 <div class="assignment-details">
-                    <strong>${item.Assignment || 'Untitled Task'}</strong>
+                    <strong>${item.Assignment || 'Untitled Assignment'}</strong>
                     <div class="assignment-meta">
                         📚 <strong>${item.Class || 'General'}</strong> | Week ${item.Week || '-'} | Due: ${item['Date Due'] || 'N/A'}
                         ${item.Priority ? ` | Priority: <em>${item.Priority}</em>` : ''}
@@ -116,13 +145,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --------------------------------------------------
-    // 4. EVENT LISTENERS
+    // 5. EVENT LISTENERS
     // --------------------------------------------------
-    if (syncBtn) syncBtn.addEventListener('click', fetchAssignmentsFromSheets);
-    if (courseFilter) courseFilter.addEventListener('change', renderFilteredAssignments);
-    if (statusFilter) statusFilter.addEventListener('change', renderFilteredAssignments);
+    if (syncBtn) {
+        syncBtn.addEventListener('click', fetchAssignmentsFromSheets);
+    }
+    if (courseFilter) {
+        courseFilter.addEventListener('change', renderFilteredAssignments);
+    }
+    if (statusFilter) {
+        statusFilter.addEventListener('change', renderFilteredAssignments);
+    }
 
-    // Week selector buttons listener
+    // Week pills filtering
     document.querySelectorAll('.week-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             document.querySelectorAll('.week-btn').forEach(b => b.classList.remove('active'));
@@ -132,13 +167,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Accent Color Customizer (Rubric Requirement)
+    // --------------------------------------------------
+    // 6. HIGH-VISIBILITY THEME CUSTOMIZER (Rubric Item 2)
+    // Changes entire dashboard section background live!
+    // --------------------------------------------------
     const accentInput = document.getElementById('accent-color-input');
-    const previewBox = document.getElementById('accent-preview-box');
+    const dashboardCard = document.getElementById('hw7-dashboard');
 
-    if (accentInput && previewBox) {
+    if (accentInput && dashboardCard) {
         accentInput.addEventListener('input', (e) => {
-            previewBox.style.backgroundColor = e.target.value.trim();
+            const color = e.target.value.trim();
+            dashboardCard.style.backgroundColor = color;
+            dashboardCard.style.transition = 'background-color 0.3s ease';
         });
     }
+
+    // Auto-fetch on initial page load
+    fetchAssignmentsFromSheets();
 });
