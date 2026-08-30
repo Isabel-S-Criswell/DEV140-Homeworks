@@ -28,7 +28,7 @@ h1, h2, h3 {
     transition: color 0.3s ease;
 }
 
-/* HEADER & NAV (THEME PICKER MOVED HERE) */
+/* HEADER & NAV */
 header#main-header {
     background-color: var(--accent-color);
     color: #ffffff;
@@ -67,11 +67,62 @@ header#main-header h1 {
     font-weight: 500;
 }
 
-/* THEME PICKER IN HEADER */
+/* THEME DROPDOWN TOGGLE & FLOATING MENU */
+.theme-dropdown-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.theme-toggle-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.08);
+}
+
+.theme-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 45px;
+    right: 0;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 12px;
+    z-index: 1000;
+    min-width: 180px;
+}
+
+.theme-dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-label {
+    margin: 0 0 8px 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--subtext-color);
+    text-transform: uppercase;
+}
+
 .theme-picker-container {
     display: flex;
     gap: 8px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .theme-swatch {
@@ -89,8 +140,15 @@ header#main-header h1 {
 }
 
 .theme-swatch.active {
-    box-shadow: 0 0 0 2px #ffffff;
+    box-shadow: 0 0 0 2px var(--accent-color);
     transform: scale(1.1);
+}
+
+.custom-picker-btn input[type="color"] {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
 }
 
 /* FULL-WIDTH ACROSS SCREEN TERM PROGRESS BAR */
@@ -99,13 +157,23 @@ header#main-header h1 {
     background-color: var(--card-bg);
     border-bottom: 1px solid var(--border-color);
     padding: 15px 0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 .term-progress-inner {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.progress-header h3 {
+    margin: 0;
 }
 
 .progress-bar-track {

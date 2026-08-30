@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Global UI Theme Palettes
     const THEMES = {
-        default: {
+        purple: {
             '--bg-color': '#f8fafc',
             '--card-bg': '#ffffff',
             '--text-color': '#1e293b',
@@ -24,19 +24,19 @@ document.addEventListener('DOMContentLoaded', () => {
             '--sticky-bg': '#fef08a',
             '--sticky-text': '#1e293b'
         },
-        ocean: {
-            '--bg-color': '#f0f9ff',
+        teal: {
+            '--bg-color': '#f0fdf4',
             '--card-bg': '#ffffff',
             '--text-color': '#0f172a',
-            '--heading-color': '#0369a1',
-            '--accent-color': '#0369a1',
-            '--accent-hover': '#0284c7',
-            '--border-color': '#bae6fd',
-            '--subtext-color': '#0369a1',
-            '--sticky-bg': '#bae6fd',
-            '--sticky-text': '#0369a1'
+            '--heading-color': '#0d9488',
+            '--accent-color': '#0d9488',
+            '--accent-hover': '#0f766e',
+            '--border-color': '#ccfbf1',
+            '--subtext-color': '#115e59',
+            '--sticky-bg': '#ccfbf1',
+            '--sticky-text': '#0f172a'
         },
-        emerald: {
+        green: {
             '--bg-color': '#f0fdf4',
             '--card-bg': '#ffffff',
             '--text-color': '#064e3b',
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '--sticky-bg': '#a7f3d0',
             '--sticky-text': '#064e3b'
         },
-        sunset: {
+        orange: {
             '--bg-color': '#fff7ed',
             '--card-bg': '#ffffff',
             '--text-color': '#431407',
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '--sticky-bg': '#fed7aa',
             '--sticky-text': '#431407'
         },
-        rose: {
+        pink: {
             '--bg-color': '#fff1f2',
             '--card-bg': '#ffffff',
             '--text-color': '#4c0519',
@@ -72,17 +72,17 @@ document.addEventListener('DOMContentLoaded', () => {
             '--sticky-bg': '#fecdd3',
             '--sticky-text': '#4c0519'
         },
-        dark: {
-            '--bg-color': '#0f172a',
-            '--card-bg': '#1e293b',
-            '--text-color': '#f8fafc',
-            '--heading-color': '#38bdf8',
-            '--accent-color': '#38bdf8',
-            '--accent-hover': '#0ea5e9',
-            '--border-color': '#334155',
-            '--subtext-color': '#94a3b8',
-            '--sticky-bg': '#334155',
-            '--sticky-text': '#f8fafc'
+        magenta: {
+            '--bg-color': '#fdf4ff',
+            '--card-bg': '#ffffff',
+            '--text-color': '#701a75',
+            '--heading-color': '#a21caf',
+            '--accent-color': '#a21caf',
+            '--accent-hover': '#c026d3',
+            '--border-color': '#f5d0fe',
+            '--subtext-color': '#86198f',
+            '--sticky-bg': '#f5d0fe',
+            '--sticky-text': '#701a75'
         }
     };
 
@@ -264,13 +264,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --------------------------------------------------
-    // 5. GLOBAL SITE THEME CUSTOMIZER
+    // 5. THEME DROPDOWN TOGGLE & COLOR PICKER CONTROLS
     // --------------------------------------------------
+    const themeToggleBtn = document.getElementById('theme-menu-toggle');
+    const themeDropdownMenu = document.getElementById('theme-dropdown-menu');
     const swatches = document.querySelectorAll('.theme-swatch');
+    const customColorInput = document.getElementById('custom-color-picker');
 
+    // Toggle dropdown visibility when clicking the pen button
+    if (themeToggleBtn && themeDropdownMenu) {
+        themeToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            themeDropdownMenu.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking anywhere outside
+        document.addEventListener('click', (e) => {
+            if (!themeDropdownMenu.contains(e.target) && !themeToggleBtn.contains(e.target)) {
+                themeDropdownMenu.classList.remove('show');
+            }
+        });
+    }
+
+    // Apply swatch themes
     swatches.forEach(swatch => {
         swatch.addEventListener('click', () => {
             const themeKey = swatch.getAttribute('data-theme');
+            if (!themeKey) return;
+
             const themeVars = THEMES[themeKey];
 
             if (themeVars) {
@@ -281,8 +302,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 swatches.forEach(s => s.classList.remove('active'));
                 swatch.classList.add('active');
             }
+
+            // Close menu upon picking a theme
+            if (themeDropdownMenu) {
+                themeDropdownMenu.classList.remove('show');
+            }
         });
     });
+
+    // Custom Color Input Handler
+    if (customColorInput) {
+        customColorInput.addEventListener('input', (e) => {
+            const chosenColor = e.target.value;
+            document.documentElement.style.setProperty('--heading-color', chosenColor);
+            document.documentElement.style.setProperty('--accent-color', chosenColor);
+            document.documentElement.style.setProperty('--accent-hover', chosenColor);
+
+            swatches.forEach(s => s.classList.remove('active'));
+            if (customColorInput.parentElement) {
+                customColorInput.parentElement.classList.add('active');
+            }
+        });
+    }
 
     // --------------------------------------------------
     // 6. STICKY NOTE SCRATCHPAD (WITH LOCALSTORAGE)
@@ -291,7 +332,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const addNoteBtn = document.getElementById('add-note-btn');
     const stickyNoteList = document.getElementById('sticky-note-list');
 
-    // Helper: Save current list of sticky notes to localStorage
     function saveNotesToLocalStorage() {
         if (!stickyNoteList) return;
         const notes = [];
@@ -301,7 +341,6 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('dashboard_sticky_notes', JSON.stringify(notes));
     }
 
-    // Helper: Render single sticky note element to DOM
     function renderStickyNoteElement(textValue) {
         if (!stickyNoteList) return;
 
@@ -327,7 +366,6 @@ document.addEventListener('DOMContentLoaded', () => {
         stickyNoteList.appendChild(li);
     }
 
-    // Load saved sticky notes from localStorage on page load
     function loadSavedNotes() {
         const savedNotes = localStorage.getItem('dashboard_sticky_notes');
         if (savedNotes) {
