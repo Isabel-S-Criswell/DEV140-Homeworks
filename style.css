@@ -77,19 +77,6 @@ input:checked + .slider:before {
 .sun-icon { margin-left: 2px; }
 .moon-icon { margin-right: 2px; }
 
-
-/* DARK MODE BASE OVERRIDES */
-body.dark-mode {
-    --bg-color: #0f172a !important;
-    --card-bg: #1e293b !important;
-    --text-color: #f8fafc !important;
-    --border-color: #334155 !important;
-    --subtext-color: #94a3b8 !important;
-    --sticky-bg: #1e293b !important;
-    --sticky-text: #fef08a !important;
-    --input-bg: #0f172a !important;
-}
-
 /* BASE STYLES */
 body {
     background-color: var(--bg-color);
@@ -378,7 +365,7 @@ header#main-header h1 {
     min-height: 90px;
     word-break: break-word;
     transform: rotate(-1deg);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, color 0.3s ease;
     border: 1px solid var(--border-color);
 }
 
@@ -438,8 +425,8 @@ select, input[type="text"] {
     padding: 8px 12px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    background: var(--input-bg);
-    color: var(--text-color);
+    background: var(--card-bg); /* Use card background for inputs */
+    color: var(--text-color);   /* Dynamic text color */
 }
 
 .btn-primary {
