@@ -34,8 +34,14 @@ p {
   margin-bottom: 16px;
 }
 
-ol { padding-left: 24px; }
-li { margin-bottom: 8px; font-weight: 500; }
+ol {
+  padding-left: 24px;
+}
+
+li {
+  margin-bottom: 8px;
+  font-weight: 500;
+}
 
 footer {
   text-align: center;
@@ -56,7 +62,10 @@ footer {
   margin-bottom: 32px;
 }
 
-#main-header h1 { color: #FEF9E7; margin-bottom: 16px; }
+#main-header h1 {
+  color: #FEF9E7;
+  margin-bottom: 16px;
+}
 
 #main-nav ul {
   list-style: none;
@@ -75,7 +84,9 @@ footer {
   font-size: 1.1rem;
 }
 
-#main-nav a:hover { color: #FEF9E7; }
+#main-nav a:hover {
+  color: #FEF9E7;
+}
 
 .card {
   background-color: #D8B4FE;
@@ -96,7 +107,7 @@ footer {
 }
 
 /* =========================================================
-   2. INTERACTIVE DASHBOARD STYLES (Homework 7)
+   2. INTERACTIVE DASHBOARD STYLES
    ========================================================= */
 .dashboard-module {
   margin-bottom: 20px;
@@ -119,14 +130,35 @@ footer {
   transition: opacity 0.2s;
 }
 
-.btn-primary { background-color: #3B0764; padding: 10px 16px; }
-.btn-danger { background-color: #991B1B; padding: 6px 12px; font-size: 0.85rem; }
-.btn-primary:hover, .btn-danger:hover { opacity: 0.85; }
+.btn-primary {
+  background-color: #3B0764;
+  padding: 10px 16px;
+}
+
+.btn-danger {
+  background-color: #991B1B;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+}
+
+.btn-primary:hover, .btn-danger:hover {
+  opacity: 0.85;
+}
 
 .input-flex, .color-picker-container {
   display: flex;
   gap: 10px;
   align-items: center;
+}
+
+#accent-color-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid #3B0764;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background-color: #FEF9E7;
+  color: #3B0764;
 }
 
 #feature-input {
@@ -156,15 +188,137 @@ input[type="color"] {
   font-weight: 600;
 }
 
-.dynamic-list { list-style: none; padding: 0; margin-top: 12px; }
-.dynamic-list li {
+.dynamic-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 12px;
+}
+
+/* Progress Bar */
+.progress-bar-track {
+  width: 100%;
+  height: 16px;
+  background-color: #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1, #a855f7);
+  transition: width 0.5s ease-in-out;
+}
+
+.progress-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #FEF9E7;
+}
+
+/* Card Subtext Override to prevent theme customizer visual clipping */
+#hw7-dashboard p.subtext {
+  background-color: transparent;
+  border: none;
+  padding: 4px 0;
+}
+
+.badge {
+  background: #e0e7ff;
+  color: #4338ca;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Controls & Filters */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.filter-bar select {
   padding: 8px 12px;
-  border: 1px solid #A855F7;
   border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-family: inherit;
+}
+
+.week-selector {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+.week-btn {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  padding: 5px 10px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.week-btn.active {
+  background: #4f46e5;
+  color: white;
+  border-color: #4f46e5;
+}
+
+/* Dynamic Assignment Cards */
+.assignment-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: white;
+  border-left: 5px solid #6366f1;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.assignment-card.complete {
+  border-left-color: #22c55e;
+  opacity: 0.8;
+}
+
+.assignment-card.high-priority {
+  border-left-color: #ef4444;
+}
+
+.assignment-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.assignment-meta {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.badge-complete {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.badge-pending {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.loading-state {
+  background-color: #FEF9E7;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px dashed #A855F7;
 }
 
 /* =========================================================
@@ -176,10 +330,16 @@ input[type="color"] {
   max-width: 100%;
 }
 
-.card { margin-bottom: 24px; }
+.card {
+  margin-bottom: 24px;
+}
 
 @media (min-width: 768px) {
-  #main-nav ul { flex-direction: row; justify-content: center; gap: 32px; }
+  #main-nav ul {
+    flex-direction: row;
+    justify-content: center;
+    gap: 32px;
+  }
   .grid-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -188,123 +348,18 @@ input[type="color"] {
     max-width: 900px;
     margin: 0 auto;
   }
-  .card { margin-bottom: 0; }
+  .card {
+    margin-bottom: 0;
+  }
 }
 
 @media (min-width: 1200px) {
-  .grid-container { max-width: 1120px; gap: 32px; padding: 0 48px; }
-  #main-header { padding: 32px 48px; }
-}
-
-/* Progress Bar */
-.progress-bar-track {
-    width: 100%;
-    height: 16px;
-    background-color: #e2e8f0;
-    border-radius: 8px;
-    overflow: hidden;
-    margin: 10px 0;
-}
-
-.progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #6366f1, #a855f7);
-    transition: width 0.5s ease-in-out;
-}
-
-.progress-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.badge {
-    background: #e0e7ff;
-    color: #4338ca;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-
-/* Controls & Filters */
-.filter-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 12px;
-}
-
-.filter-bar select {
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid #cbd5e1;
-    font-family: inherit;
-}
-
-.week-selector {
-    display: flex;
-    gap: 4px;
-    overflow-x: auto;
-    padding-bottom: 8px;
-    margin-bottom: 16px;
-}
-
-.week-btn {
-    background: #f1f5f9;
-    border: 1px solid #cbd5e1;
-    padding: 5px 10px;
-    border-radius: 14px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    white-space: nowrap;
-}
-
-.week-btn.active {
-    background: #4f46e5;
-    color: white;
-    border-color: #4f46e5;
-}
-
-/* Dynamic Assignment Cards */
-.assignment-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    background: white;
-    border-left: 5px solid #6366f1;
-    border-radius: 6px;
-    margin-bottom: 10px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-}
-
-.assignment-card.complete {
-    border-left-color: #22c55e;
-    opacity: 0.8;
-}
-
-.assignment-card.high-priority {
-    border-left-color: #ef4444;
-}
-
-.assignment-details {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.assignment-meta {
-    font-size: 0.8rem;
-    color: #64748b;
-}
-
-.badge-complete {
-    background-color: #dcfce7;
-    color: #15803d;
-}
-
-.badge-pending {
-    background-color: #fef3c7;
-    color: #b45309;
+  .grid-container {
+    max-width: 1120px;
+    gap: 32px;
+    padding: 0 48px;
+  }
+  #main-header {
+    padding: 32px 48px;
+  }
 }

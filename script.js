@@ -10,11 +10,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const courseFilter = document.getElementById('course-filter');
     const statusFilter = document.getElementById('status-filter');
 
+    // Helper function to safely read object properties regardless of case
+    function getProp(obj, key) {
+        if (!obj) return '';
+        const foundKey = Object.keys(obj).find(k => k.toLowerCase() === key.toLowerCase());
+        return foundKey ? obj[foundKey] : '';
+    }
+
     // --------------------------------------------------
     // 1. CALCULATE CURRENT ACADEMIC WEEK DYNAMICALLY
     // --------------------------------------------------
     function getCurrentAcademicWeek() {
-        // Term start date: Monday, July 6, 2026
         const termStart = new Date('2026-07-06T00:00:00');
         const today = new Date();
         const diffInMs = today - termStart;
@@ -27,20 +33,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --------------------------------------------------
-    // 2. FETCH FROM APPS SCRIPT (WITH REDIRECT HANDLING)
+    // 2. FETCH FROM APPS SCRIPT
     // --------------------------------------------------
     async function fetchAssignmentsFromSheets() {
         assignmentList.innerHTML = `<li class="loading-state">⏳ Connecting to Google Sheets...</li>`;
 
         try {
-            // redirect: 'follow' is required for Google Apps Script execution URLs
             const response = await fetch(SHEETS_API_URL, { redirect: 'follow' });
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            rawAssignments = await response.json();
+            const data = await response.json();
+            // Handle cases where data is wrapped in an object property (e.g., data.data or data.rows)
+            rawAssignments = Array.isArray(data) ? data : (data.data || data.rows || []);
             
             console.log("Successfully fetched data rows:", rawAssignments.length);
 
@@ -57,9 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Populate course options dynamically (e.g., DEV140, DEV150, AI125, CTIA170)
+    // Populate course options dynamically
     function populateCourseDropdown(data) {
-        const courses = ['ALL', ...new Set(data.map(item => item.Class).filter(Boolean))];
+        const rawCourses = data.map(item => getProp(item, 'class') || getProp(item, 'course')).filter(Boolean);
+        const courses = ['ALL', ...new Set(rawCourses)];
         courseFilter.innerHTML = courses.map(c => `<option value="${c}">${c === 'ALL' ? 'All Courses' : c}</option>`).join('');
     }
 
@@ -71,9 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalTasks = data.length;
         
         const completedTasks = data.filter(item => {
-            const progressVal = (item.Progress || '').toString().trim().toLowerCase();
-            const completeVal = (item.Complete || '').toString().trim().toLowerCase();
-            return progressVal === 'complete' || completeVal === 'true';
+            const progressVal = String(getProp(item, 'progress')).trim().toLowerCase();
+            const completeVal = String(getProp(item, 'complete')).trim().toLowerCase();
+            const statusVal = String(getProp(item, 'status')).trim().toLowerCase();
+            return progressVal === 'complete' || completeVal === 'true' || statusVal === 'complete' || statusVal === 'completed';
         }).length;
 
         const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
@@ -101,11 +110,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedStatus = statusFilter.value;
 
         const filtered = rawAssignments.filter(item => {
-            const matchesCourse = selectedCourse === 'ALL' || item.Class === selectedCourse;
-            const matchesWeek = selectedWeek === 'ALL' || String(item.Week) === String(selectedWeek);
+            const itemCourse = getProp(item, 'class') || getProp(item, 'course');
+            const itemWeek = getProp(item, 'week');
+            const matchesCourse = selectedCourse === 'ALL' || itemCourse === selectedCourse;
+            const matchesWeek = selectedWeek === 'ALL' || String(itemWeek) === String(selectedWeek);
             
-            const isCompleted = (item.Progress || '').toString().trim().toLowerCase() === 'complete' || 
-                                (item.Complete || '').toString().trim().toLowerCase() === 'true';
+            const progressVal = String(getProp(item, 'progress')).trim().toLowerCase();
+            const completeVal = String(getProp(item, 'complete')).trim().toLowerCase();
+            const statusVal = String(getProp(item, 'status')).trim().toLowerCase();
+
+            const isCompleted = progressVal === 'complete' || completeVal === 'true' || statusVal === 'complete' || statusVal === 'completed';
 
             const matchesStatus = selectedStatus === 'ALL' || 
                 (selectedStatus === 'Complete' && isCompleted) || 
@@ -121,22 +135,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         filtered.forEach(item => {
             const li = document.createElement('li');
-            const isDone = (item.Progress || '').toString().trim().toLowerCase() === 'complete' || 
-                           (item.Complete || '').toString().trim().toLowerCase() === 'true';
-            const isHighPriority = item.Priority === 'High';
+            
+            const progressVal = String(getProp(item, 'progress')).trim().toLowerCase();
+            const completeVal = String(getProp(item, 'complete')).trim().toLowerCase();
+            const statusVal = String(getProp(item, 'status')).trim().toLowerCase();
+            const isDone = progressVal === 'complete' || completeVal === 'true' || statusVal === 'complete' || statusVal === 'completed';
+            
+            const priorityVal = getProp(item, 'priority');
+            const isHighPriority = String(priorityVal).toLowerCase() === 'high';
+
+            const title = getProp(item, 'assignment') || getProp(item, 'title') || getProp(item, 'name') || 'Untitled Assignment';
+            const courseName = getProp(item, 'class') || getProp(item, 'course') || 'General';
+            const weekNum = getProp(item, 'week') || '-';
+            const dueDate = getProp(item, 'date due') || getProp(item, 'due date') || getProp(item, 'due') || 'N/A';
 
             li.className = `assignment-card ${isDone ? 'complete' : ''} ${isHighPriority ? 'high-priority' : ''}`;
             
             li.innerHTML = `
                 <div class="assignment-details">
-                    <strong>${item.Assignment || 'Untitled Assignment'}</strong>
+                    <strong>${title}</strong>
                     <div class="assignment-meta">
-                        📚 <strong>${item.Class || 'General'}</strong> | Week ${item.Week || '-'} | Due: ${item['Date Due'] || 'N/A'}
-                        ${item.Priority ? ` | Priority: <em>${item.Priority}</em>` : ''}
+                        📚 <strong>${courseName}</strong> | Week ${weekNum} | Due: ${dueDate}
+                        ${priorityVal ? ` | Priority: <em>${priorityVal}</em>` : ''}
                     </div>
                 </div>
                 <span class="badge ${isDone ? 'badge-complete' : 'badge-pending'}">
-                    ${isDone ? 'Completed' : (item.Progress || 'Not Started')}
+                    ${isDone ? 'Completed' : (progressVal || statusVal || 'Pending')}
                 </span>
             `;
 
@@ -157,7 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
         statusFilter.addEventListener('change', renderFilteredAssignments);
     }
 
-    // Week pills filtering
     document.querySelectorAll('.week-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             document.querySelectorAll('.week-btn').forEach(b => b.classList.remove('active'));
@@ -168,20 +191,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --------------------------------------------------
-    // 6. HIGH-VISIBILITY THEME CUSTOMIZER (Rubric Item 2)
-    // Changes entire dashboard section background live!
+    // 6. THEME CUSTOMIZER FIX
     // --------------------------------------------------
     const accentInput = document.getElementById('accent-color-input');
     const dashboardCard = document.getElementById('hw7-dashboard');
 
     if (accentInput && dashboardCard) {
         accentInput.addEventListener('input', (e) => {
-            const color = e.target.value.trim();
-            dashboardCard.style.backgroundColor = color;
-            dashboardCard.style.transition = 'background-color 0.3s ease';
+            let color = e.target.value.trim();
+            if (color) {
+                // Apply color directly to card background
+                dashboardCard.style.backgroundColor = color;
+                dashboardCard.style.transition = 'background-color 0.3s ease';
+            }
         });
     }
 
-    // Auto-fetch on initial page load
+    // Initial fetch
     fetchAssignmentsFromSheets();
 });
