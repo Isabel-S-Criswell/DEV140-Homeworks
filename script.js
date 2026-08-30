@@ -4,10 +4,86 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Course mapping for full names and custom badge/border colors
     const COURSE_CONFIG = {
-        'CTIA170': { name: 'CompTIA A+ Core 2 and Certification Practice', color: '#e63946' }, // Red
-        'DEV140':  { name: 'Web Development', color: '#2a9d8f' },                             // Green
-        'DEV150':  { name: 'Linux & Command Line Foundations', color: '#7b2cbf' },            // Purple
-        'AI125':   { name: 'Introduction to Applied AI for Data Analysis', color: '#7b2cbf' } // Purple
+        'CTIA170': { name: 'CompTIA A+ Core 2 and Certification Practice', color: '#e63946' },
+        'DEV140':  { name: 'Web Development', color: '#2a9d8f' },
+        'DEV150':  { name: 'Linux & Command Line Foundations', color: '#7b2cbf' },
+        'AI125':   { name: 'Introduction to Applied AI for Data Analysis', color: '#7b2cbf' }
+    };
+
+    // Global UI Theme Palettes
+    const THEMES = {
+        default: {
+            '--bg-color': '#f8fafc',
+            '--card-bg': '#ffffff',
+            '--text-color': '#1e293b',
+            '--heading-color': '#3B0764',
+            '--accent-color': '#3B0764',
+            '--accent-hover': '#581c87',
+            '--border-color': '#e2e8f0',
+            '--subtext-color': '#64748b',
+            '--sticky-bg': '#fef08a',
+            '--sticky-text': '#1e293b'
+        },
+        ocean: {
+            '--bg-color': '#f0f9ff',
+            '--card-bg': '#ffffff',
+            '--text-color': '#0f172a',
+            '--heading-color': '#0369a1',
+            '--accent-color': '#0369a1',
+            '--accent-hover': '#0284c7',
+            '--border-color': '#bae6fd',
+            '--subtext-color': '#0369a1',
+            '--sticky-bg': '#bae6fd',
+            '--sticky-text': '#0369a1'
+        },
+        emerald: {
+            '--bg-color': '#f0fdf4',
+            '--card-bg': '#ffffff',
+            '--text-color': '#064e3b',
+            '--heading-color': '#047857',
+            '--accent-color': '#047857',
+            '--accent-hover': '#059669',
+            '--border-color': '#a7f3d0',
+            '--subtext-color': '#047857',
+            '--sticky-bg': '#a7f3d0',
+            '--sticky-text': '#064e3b'
+        },
+        sunset: {
+            '--bg-color': '#fff7ed',
+            '--card-bg': '#ffffff',
+            '--text-color': '#431407',
+            '--heading-color': '#c2410c',
+            '--accent-color': '#c2410c',
+            '--accent-hover': '#ea580c',
+            '--border-color': '#ffedd5',
+            '--subtext-color': '#9a3412',
+            '--sticky-bg': '#fed7aa',
+            '--sticky-text': '#431407'
+        },
+        rose: {
+            '--bg-color': '#fff1f2',
+            '--card-bg': '#ffffff',
+            '--text-color': '#4c0519',
+            '--heading-color': '#be123c',
+            '--accent-color': '#be123c',
+            '--accent-hover': '#e11d48',
+            '--border-color': '#fecdd3',
+            '--subtext-color': '#9f1239',
+            '--sticky-bg': '#fecdd3',
+            '--sticky-text': '#4c0519'
+        },
+        dark: {
+            '--bg-color': '#0f172a',
+            '--card-bg': '#1e293b',
+            '--text-color': '#f8fafc',
+            '--heading-color': '#38bdf8',
+            '--accent-color': '#38bdf8',
+            '--accent-hover': '#0ea5e9',
+            '--border-color': '#334155',
+            '--subtext-color': '#94a3b8',
+            '--sticky-bg': '#334155',
+            '--sticky-text': '#f8fafc'
+        }
     };
 
     let rawAssignments = [];
@@ -90,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Populate course dropdown
     function populateCourseDropdown(data) {
         if (!courseFilter) return;
         const rawCourses = data.map(item => getProp(item, 'class') || getProp(item, 'course')).filter(Boolean);
@@ -166,7 +241,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const dueDate = getProp(item, 'date due') || getProp(item, 'due date') || getProp(item, 'due') || 'N/A';
 
             li.className = `assignment-card ${isDone ? 'complete' : ''} ${isHighPriority ? 'high-priority' : ''}`;
-            
             li.style.borderLeftColor = courseInfo.color;
             
             li.innerHTML = `
@@ -190,7 +264,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --------------------------------------------------
-    // 5. EVENT LISTENERS
+    // 5. GLOBAL SITE THEME CUSTOMIZER
+    // --------------------------------------------------
+    const swatches = document.querySelectorAll('.theme-swatch');
+
+    swatches.forEach(swatch => {
+        swatch.addEventListener('click', () => {
+            const themeKey = swatch.getAttribute('data-theme');
+            const themeVars = THEMES[themeKey];
+
+            if (themeVars) {
+                Object.keys(themeVars).forEach(key => {
+                    document.documentElement.style.setProperty(key, themeVars[key]);
+                });
+
+                swatches.forEach(s => s.classList.remove('active'));
+                swatch.classList.add('active');
+            }
+        });
+    });
+
+    // --------------------------------------------------
+    // 6. STICKY NOTE SCRATCHPAD (CREATE & REMOVE NODES)
+    // --------------------------------------------------
+    const noteInput = document.getElementById('note-input');
+    const addNoteBtn = document.getElementById('add-note-btn');
+    const stickyNoteList = document.getElementById('sticky-note-list');
+
+    function createStickyNote() {
+        if (!noteInput) return;
+        const textValue = noteInput.value.trim();
+        if (!textValue) return;
+
+        const li = document.createElement('li');
+        li.className = 'sticky-card';
+
+        const p = document.createElement('p');
+        p.textContent = textValue;
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-note-btn';
+        deleteBtn.innerHTML = '&times;';
+        deleteBtn.title = 'Delete note';
+        deleteBtn.setAttribute('aria-label', 'Delete note');
+
+        deleteBtn.addEventListener('click', () => {
+            li.remove();
+        });
+
+        li.appendChild(p);
+        li.appendChild(deleteBtn);
+        if (stickyNoteList) stickyNoteList.appendChild(li);
+
+        noteInput.value = '';
+    }
+
+    // --------------------------------------------------
+    // 7. EVENT LISTENERS
     // --------------------------------------------------
     if (syncBtn) {
         syncBtn.addEventListener('click', fetchAssignmentsFromSheets);
@@ -211,69 +341,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --------------------------------------------------
-    // 6. THEME CUSTOMIZER
-    // --------------------------------------------------
-    const accentInput = document.getElementById('accent-color-input');
-    const dashboardCard = document.getElementById('hw7-dashboard');
-
-    if (accentInput && dashboardCard) {
-        accentInput.addEventListener('input', (e) => {
-            let color = e.target.value.trim();
-            if (color) {
-                dashboardCard.style.backgroundColor = color;
-                dashboardCard.style.transition = 'background-color 0.3s ease';
-            }
-        });
-    }
-
-    // --------------------------------------------------
-    // 7. STICKY NOTE SCRATCHPAD (CREATE & REMOVE NODES)
-    // --------------------------------------------------
-    const noteInput = document.getElementById('note-input');
-    const addNoteBtn = document.getElementById('add-note-btn');
-    const stickyNoteList = document.getElementById('sticky-note-list');
-
-    function createStickyNote() {
-        if (!noteInput || !stickyNoteList) return;
-        
-        const textValue = noteInput.value.trim();
-        if (!textValue) return;
-
-        // 1. Create <li> container
-        const li = document.createElement('li');
-        li.className = 'sticky-card';
-
-        // 2. Create note text element
-        const p = document.createElement('p');
-        p.textContent = textValue;
-
-        // 3. Create delete button (Bonus Criteria!)
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'delete-note-btn';
-        deleteBtn.innerHTML = '&times;'; // 'x' icon
-        deleteBtn.title = 'Delete note';
-        deleteBtn.setAttribute('aria-label', 'Delete note');
-
-        // Remove element on click
-        deleteBtn.addEventListener('click', () => {
-            li.remove();
-        });
-
-        // 4. Assemble and append into DOM
-        li.appendChild(p);
-        li.appendChild(deleteBtn);
-        stickyNoteList.appendChild(li);
-
-        // Clear input field
-        noteInput.value = '';
-    }
-
-    // Event Listeners for Sticky Notes
     if (addNoteBtn && noteInput) {
         addNoteBtn.addEventListener('click', createStickyNote);
         
-        // Press Enter to submit note
         noteInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 createStickyNote();
@@ -283,5 +353,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial fetch on page load
     fetchAssignmentsFromSheets();
-
-}); // Matches DOMContentLoaded on line 1
+});

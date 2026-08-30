@@ -20,6 +20,7 @@
                 <li><a href="#about" aria-label="Jump to About Me section">About Me</a></li>
                 <li><a href="#interests" aria-label="Jump to My Favorite Topics section">Interests</a></li>
                 <li><a href="#hw7-dashboard" aria-label="Jump to Dashboard section">Dashboard</a></li>
+                <li><a href="#sticky-note-section" aria-label="Jump to Scratchpad section">Scratchpad</a></li>
             </ul>
         </nav>
     </header>
@@ -51,86 +52,93 @@
         </section>
 
         <!-- Section 3: Homework 7 Dashboard -->
-      <section id="hw7-dashboard" class="card">
-    <h2>Academic Planner & Assignment Hub</h2>
+        <section id="hw7-dashboard" class="card">
+            <h2>Academic Planner & Assignment Hub</h2>
 
-    <!-- Dynamic Term & Week Progress Tracker -->
-    <div class="dashboard-module">
-        <div class="progress-header">
-            <h3 id="term-header">Term Progress</h3>
-            <span id="week-badge" class="badge">Calculating...</span>
-        </div>
-        <div class="progress-bar-track">
-            <div id="term-progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
-        </div>
-        <p id="term-status-text" class="subtext">Click "Sync Sheets Data" to pull live coursework...</p>
-    </div>
+            <!-- Dynamic Term & Week Progress Tracker -->
+            <div class="dashboard-module">
+                <div class="progress-header">
+                    <h3 id="term-header">Term Progress</h3>
+                    <span id="week-badge" class="badge">Calculating...</span>
+                </div>
+                <div class="progress-bar-track">
+                    <div id="term-progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
+                </div>
+                <p id="term-status-text" class="subtext">Click "Sync Sheets Data" to pull live coursework...</p>
+            </div>
 
-    <!-- Live Google Sheets Assignment Viewer -->
-    <div class="dashboard-module">
-        <h3>Live Assignments</h3>
-        
-        <!-- Controls: Course & Status Filters -->
-        <div class="filter-bar">
-            <select id="course-filter">
-                <option value="ALL">All Courses</option>
-            </select>
+            <!-- Live Google Sheets Assignment Viewer -->
+            <div class="dashboard-module">
+                <h3>Live Assignments</h3>
+                
+                <!-- Controls: Course & Status Filters -->
+                <div class="filter-bar">
+                    <select id="course-filter">
+                        <option value="ALL">All Courses</option>
+                    </select>
 
-            <select id="status-filter">
-                <option value="ALL">All Statuses</option>
-                <option value="Pending">Pending / In Progress</option>
-                <option value="Complete">Completed</option>
-            </select>
+                    <select id="status-filter">
+                        <option value="ALL">All Statuses</option>
+                        <option value="Pending">Pending / In Progress</option>
+                        <option value="Complete">Completed</option>
+                    </select>
 
-            <button id="sync-api-btn" class="btn-primary">Sync Sheets Data</button>
-        </div>
+                    <button id="sync-api-btn" class="btn-primary">Sync Sheets Data</button>
+                </div>
 
-        <!-- Week Pill Selector -->
-        <div class="week-selector">
-            <button class="week-btn active" data-week="ALL">All Weeks</button>
-            <button class="week-btn" data-week="1">W1</button>
-            <button class="week-btn" data-week="2">W2</button>
-            <button class="week-btn" data-week="3">W3</button>
-            <button class="week-btn" data-week="4">W4</button>
-            <button class="week-btn" data-week="5">W5</button>
-            <button class="week-btn" data-week="6">W6</button>
-            <button class="week-btn" data-week="7">W7</button>
-            <button class="week-btn" data-week="8">W8</button>
-            <button class="week-btn" data-week="9">W9</button>
-            <button class="week-btn" data-week="10">W10</button>
-            <button class="week-btn" data-week="11">Finals (W11)</button>
-        </div>
+                <!-- Week Pill Selector -->
+                <div class="week-selector">
+                    <button class="week-btn active" data-week="ALL">All Weeks</button>
+                    <button class="week-btn" data-week="1">W1</button>
+                    <button class="week-btn" data-week="2">W2</button>
+                    <button class="week-btn" data-week="3">W3</button>
+                    <button class="week-btn" data-week="4">W4</button>
+                    <button class="week-btn" data-week="5">W5</button>
+                    <button class="week-btn" data-week="6">W6</button>
+                    <button class="week-btn" data-week="7">W7</button>
+                    <button class="week-btn" data-week="8">W8</button>
+                    <button class="week-btn" data-week="9">W9</button>
+                    <button class="week-btn" data-week="10">W10</button>
+                    <button class="week-btn" data-week="11">Finals (W11)</button>
+                </div>
 
-        <!-- Dynamic Output List -->
-        <ul id="sheet-assignment-list" class="dynamic-list">
-            <li class="loading-state">Click "Sync Sheets Data" above to fetch your assignments!</li>
-        </ul>
-    </div>
+                <!-- Dynamic Output List -->
+                <ul id="sheet-assignment-list" class="dynamic-list">
+                    <li class="loading-state">Click "Sync Sheets Data" above to fetch your assignments!</li>
+                </ul>
+            </div>
 
-    <!-- Theme Customizer -->
-    <div class="dashboard-module">
-        <h3>Dashboard Theme Customizer</h3>
-        <label for="accent-color-input">Type a color name or hex code to change dashboard background live:</label>
-        <div class="color-picker-container">
-            <input type="text" id="accent-color-input" placeholder="e.g., #f3e8ff, lavender, #e0f2fe">
-        </div>
-    </div>
-<!-- Section 4: Quick Thoughts Sticky Notes -->
-<section id="sticky-note-section" class="card">
-    <h2>Quick Thoughts Scratchpad</h2>
-    <p class="subtext">Spill your thoughts or quickly jot down to-dos:</p>
+            <!-- Theme Customizer (Global Site Theme Swatches) -->
+            <div class="dashboard-module">
+                <h3>Global Theme Customizer</h3>
+                <p class="subtext">Select a theme swatch to customize the entire website:</p>
+                <div class="theme-picker-container">
+                    <button type="button" class="theme-swatch active" data-theme="default" style="background-color: #3B0764;" title="Royal Purple" aria-label="Royal Purple Theme"></button>
+                    <button type="button" class="theme-swatch" data-theme="ocean" style="background-color: #0369a1;" title="Ocean Breeze" aria-label="Ocean Theme"></button>
+                    <button type="button" class="theme-swatch" data-theme="emerald" style="background-color: #047857;" title="Forest Emerald" aria-label="Emerald Theme"></button>
+                    <button type="button" class="theme-swatch" data-theme="sunset" style="background-color: #c2410c;" title="Sunset Amber" aria-label="Sunset Theme"></button>
+                    <button type="button" class="theme-swatch" data-theme="rose" style="background-color: #be123c;" title="Rose Quartz" aria-label="Rose Theme"></button>
+                    <button type="button" class="theme-swatch" data-theme="dark" style="background-color: #1e293b;" title="Midnight Dark" aria-label="Dark Mode Theme"></button>
+                </div>
+            </div>
+        </section>
 
-    <!-- Form to Add Notes -->
-    <div class="note-input-container">
-        <input type="text" id="note-input" placeholder="Type a quick thought..." aria-label="New note text">
-        <button id="add-note-btn" class="btn-primary" type="button">Add Note</button>
-    </div>
+        <!-- Section 4: Quick Thoughts Sticky Notes (Placed Side-by-Side on Desktop) -->
+        <section id="sticky-note-section" class="card">
+            <h2>Quick Thoughts Scratchpad</h2>
+            <p class="subtext">Spill your thoughts or quickly jot down reminders:</p>
 
-    <!-- Dynamic Note Container -->
-    <ul id="sticky-note-list" class="sticky-note-grid">
-        <!-- Notes will be created & appended here dynamically -->
-    </ul>
-</section>
+            <!-- Form to Add Notes -->
+            <div class="note-input-container">
+                <input type="text" id="note-input" placeholder="Type a quick thought..." aria-label="New note text">
+                <button id="add-note-btn" class="btn-primary" type="button">Add Note</button>
+            </div>
+
+            <!-- Dynamic Note Container -->
+            <ul id="sticky-note-list" class="sticky-note-grid">
+                <!-- Dynamic sticky notes load here -->
+            </ul>
+        </section>
     </main>
 
     <!-- Footer -->
