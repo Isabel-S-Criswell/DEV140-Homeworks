@@ -515,7 +515,10 @@ footer {
 
 /* RESPONSIVE LAYOUT */
 @media (max-width: 900px) {
-    .top-cards-row {
-        grid-template-columns: 1fr;
+.top-cards-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
     }
 }
