@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --------------------------------------------------
+// --------------------------------------------------
     // 5. THEME DROPDOWN TOGGLE & COLOR PICKER CONTROLS
     // --------------------------------------------------
     const themeToggleBtn = document.getElementById('theme-menu-toggle');
@@ -310,13 +310,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Custom Color Input Handler
+    // Custom Color Input Handler - Updates ALL theme variables dynamically
     if (customColorInput) {
         customColorInput.addEventListener('input', (e) => {
             const chosenColor = e.target.value;
+
+            // Set Primary Accent & Headings
             document.documentElement.style.setProperty('--heading-color', chosenColor);
             document.documentElement.style.setProperty('--accent-color', chosenColor);
             document.documentElement.style.setProperty('--accent-hover', chosenColor);
+
+            // Dynamically generate translucent soft background & border tones for custom color
+            document.documentElement.style.setProperty('--subtext-color', chosenColor);
+            document.documentElement.style.setProperty('--sticky-bg', chosenColor + '33'); // 20% opacity
+            document.documentElement.style.setProperty('--border-color', chosenColor + '40'); // 25% opacity
 
             swatches.forEach(s => s.classList.remove('active'));
             if (customColorInput.parentElement) {
