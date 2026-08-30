@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbw25hwFfwblp7pRj0uEhot_CXxtWwBTg6IfAq1JiGHUsrIUWxddt2I2G1idOuhNamA4/exec';
 
-    // Course mapping for full names and custom badge colors
+    // Course mapping for full names and custom badge/border colors
     const COURSE_CONFIG = {
         'CTIA170': { name: 'CompTIA A+ Core 2 and Certification Practice', color: '#e63946' }, // Red
         'DEV140':  { name: 'Web Development', color: '#2a9d8f' },                             // Green
@@ -69,15 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
             
-            // Handle array or wrapped object responses, filtering out empty placeholder rows
             const unparsedRows = Array.isArray(data) ? data : (data.data || data.rows || []);
             rawAssignments = unparsedRows.filter(item => {
                 const title = getProp(item, 'assignment') || getProp(item, 'title');
                 return title && String(title).trim().toLowerCase() !== 'empty';
             });
             
-            console.log("Successfully fetched assignment rows:", rawAssignments.length);
-
             populateCourseDropdown(rawAssignments);
             updateTermProgress(rawAssignments);
             renderFilteredAssignments();
@@ -163,13 +160,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const title = getProp(item, 'assignment') || getProp(item, 'title') || getProp(item, 'name') || 'Untitled Assignment';
             const courseCode = (getProp(item, 'class') || getProp(item, 'course') || 'General').trim();
             
-            // Map course code to full title and background color badge
+            // Map course code to config
             const courseInfo = COURSE_CONFIG[courseCode] || { name: courseCode, color: '#6c757d' };
 
             const weekNum = getProp(item, 'week') || '-';
             const dueDate = getProp(item, 'date due') || getProp(item, 'due date') || getProp(item, 'due') || 'N/A';
 
             li.className = `assignment-card ${isDone ? 'complete' : ''} ${isHighPriority ? 'high-priority' : ''}`;
+            
+            // Set the left border color dynamically to match the course color
+            li.style.borderLeftColor = courseInfo.color;
             
             li.innerHTML = `
                 <div class="assignment-details">
@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --------------------------------------------------
-    // 6. THEME CUSTOMIZER FIX
+    // 6. THEME CUSTOMIZER
     // --------------------------------------------------
     const accentInput = document.getElementById('accent-color-input');
     const dashboardCard = document.getElementById('hw7-dashboard');
