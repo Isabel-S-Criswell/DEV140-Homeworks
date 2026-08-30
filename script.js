@@ -271,14 +271,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const swatches = document.querySelectorAll('.theme-swatch');
     const customColorInput = document.getElementById('custom-color-picker');
 
-    // Toggle dropdown visibility when clicking the pen button
     if (themeToggleBtn && themeDropdownMenu) {
         themeToggleBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             themeDropdownMenu.classList.toggle('show');
         });
 
-        // Close dropdown when clicking anywhere outside
         document.addEventListener('click', (e) => {
             if (!themeDropdownMenu.contains(e.target) && !themeToggleBtn.contains(e.target)) {
                 themeDropdownMenu.classList.remove('show');
@@ -286,49 +284,61 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Apply swatch themes
+    // Apply swatch themes dynamically while accounting for Dark Mode
+    function applyThemePalette(themeKey) {
+        const themeVars = THEMES[themeKey];
+        if (!themeVars) return;
+
+        const isDark = document.body.classList.contains('dark-mode');
+
+        Object.keys(themeVars).forEach(key => {
+            // If Dark Mode is active, skip background and card variables so dark mode styles prevail
+            if (isDark && (key === '--bg-color' || key === '--card-bg')) {
+                return;
+            }
+            document.documentElement.style.setProperty(key, themeVars[key]);
+        });
+
+        localStorage.setItem('dashboard_accent_theme', themeKey);
+    }
+
     swatches.forEach(swatch => {
         swatch.addEventListener('click', () => {
             const themeKey = swatch.getAttribute('data-theme');
             if (!themeKey) return;
 
-            const themeVars = THEMES[themeKey];
+            applyThemePalette(themeKey);
 
-            if (themeVars) {
-                Object.keys(themeVars).forEach(key => {
-                    document.documentElement.style.setProperty(key, themeVars[key]);
-                });
+            swatches.forEach(s => s.classList.remove('active'));
+            swatch.classList.add('active');
 
-                swatches.forEach(s => s.classList.remove('active'));
-                swatch.classList.add('active');
-            }
-
-            // Close menu upon picking a theme
             if (themeDropdownMenu) {
                 themeDropdownMenu.classList.remove('show');
             }
         });
     });
 
-    // Custom Color Input Handler - Updates ALL theme variables dynamically
+    // Custom Color Input Handler - Updates primary accents dynamically
     if (customColorInput) {
         customColorInput.addEventListener('input', (e) => {
             const chosenColor = e.target.value;
 
-            // Set Primary Accent & Headings
             document.documentElement.style.setProperty('--heading-color', chosenColor);
             document.documentElement.style.setProperty('--accent-color', chosenColor);
             document.documentElement.style.setProperty('--accent-hover', chosenColor);
-
-            // Dynamically generate translucent soft background & border tones for custom color
             document.documentElement.style.setProperty('--subtext-color', chosenColor);
-            document.documentElement.style.setProperty('--sticky-bg', chosenColor + '33'); // 20% opacity
-            document.documentElement.style.setProperty('--border-color', chosenColor + '40'); // 25% opacity
+            
+            // Soft opacity fills for sticky notes and borders
+            document.documentElement.style.setProperty('--sticky-bg', chosenColor + '33');
+            document.documentElement.style.setProperty('--border-color', chosenColor + '40');
 
             swatches.forEach(s => s.classList.remove('active'));
             if (customColorInput.parentElement) {
                 customColorInput.parentElement.classList.add('active');
             }
+
+            localStorage.setItem('dashboard_custom_color', chosenColor);
+            localStorage.removeItem('dashboard_accent_theme');
         });
     }
 
@@ -430,6 +440,62 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --------------------------------------------------
+    // 8. LIGHT / DARK MODE TOGGLE (WITH LOCALSTORAGE)
+    // --------------------------------------------------
+    const modeToggleBtn = document.getElementById('mode-toggle-btn');
+    const modeIcon = document.getElementById('mode-icon');
+    const modeLabel = document.getElementById('mode-label');
+
+    function applyDarkModeState(isDark) {
+        if (isDark) {
+            document.body.classList.add('dark-mode');
+            if (modeIcon) modeIcon.textContent = '☀️';
+            if (modeLabel) modeLabel.textContent = 'Light';
+        } else {
+            document.body.classList.remove('dark-mode');
+            if (modeIcon) modeIcon.textContent = '🌙';
+            if (modeLabel) modeLabel.textContent = 'Dark';
+        }
+
+        // Re-apply current saved palette theme to clear/restore background inline styles
+        const activeTheme = localStorage.getItem('dashboard_accent_theme') || 'purple';
+        if (!localStorage.getItem('dashboard_custom_color')) {
+            applyThemePalette(activeTheme);
+        }
+    }
+
+    // Load saved settings on startup
+    const savedMode = localStorage.getItem('dashboard_theme_mode');
+    if (savedMode === 'dark') {
+        applyDarkModeState(true);
+    }
+
+    const savedTheme = localStorage.getItem('dashboard_accent_theme');
+    const savedCustomColor = localStorage.getItem('dashboard_custom_color');
+
+    if (savedCustomColor && customColorInput) {
+        customColorInput.value = savedCustomColor;
+        customColorInput.dispatchEvent(new Event('input'));
+    } else if (savedTheme && THEMES[savedTheme]) {
+        applyThemePalette(savedTheme);
+        swatches.forEach(s => {
+            if (s.getAttribute('data-theme') === savedTheme) {
+                s.classList.add('active');
+            } else {
+                s.classList.remove('active');
+            }
+        });
+    }
+
+    if (modeToggleBtn) {
+        modeToggleBtn.addEventListener('click', () => {
+            const isCurrentlyDark = document.body.classList.contains('dark-mode');
+            const nextState = !isCurrentlyDark;
+            applyDarkModeState(nextState);
+            localStorage.setItem('dashboard_theme_mode', nextState ? 'dark' : 'light');
+        });
+    }
     // Initialize saved notes and sheet data on page load
     loadSavedNotes();
     fetchAssignmentsFromSheets();
