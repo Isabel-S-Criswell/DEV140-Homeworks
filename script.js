@@ -21,7 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#3B0764',
                 '--accent-hover': '#581c87',
                 '--border-color': '#e2e8f0',
-                '--subtext-color': '#64748b'
+                '--subtext-color': '#64748b',
+                '--input-bg': '#ffffff'
             },
             dark: {
                 '--bg-color': '#0f0716',
@@ -31,7 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#9333ea',
                 '--accent-hover': '#a855f7',
                 '--border-color': '#3b0764',
-                '--subtext-color': '#c084fc'
+                '--subtext-color': '#c084fc',
+                '--input-bg': '#261238'
             }
         },
         teal: {
@@ -43,7 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#0d9488',
                 '--accent-hover': '#0f766e',
                 '--border-color': '#ccfbf1',
-                '--subtext-color': '#115e59'
+                '--subtext-color': '#115e59',
+                '--input-bg': '#ffffff'
             },
             dark: {
                 '--bg-color': '#042f2e',
@@ -53,7 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#14b8a6',
                 '--accent-hover': '#2dd4bf',
                 '--border-color': '#115e59',
-                '--subtext-color': '#99f6e4'
+                '--subtext-color': '#99f6e4',
+                '--input-bg': '#115e59'
             }
         },
         green: {
@@ -65,7 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#047857',
                 '--accent-hover': '#059669',
                 '--border-color': '#a7f3d0',
-                '--subtext-color': '#047857'
+                '--subtext-color': '#047857',
+                '--input-bg': '#ffffff'
             },
             dark: {
                 '--bg-color': '#022c22',
@@ -75,7 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#10b981',
                 '--accent-hover': '#34d399',
                 '--border-color': '#047857',
-                '--subtext-color': '#a7f3d0'
+                '--subtext-color': '#a7f3d0',
+                '--input-bg': '#047857'
             }
         },
         orange: {
@@ -87,7 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#c2410c',
                 '--accent-hover': '#ea580c',
                 '--border-color': '#ffedd5',
-                '--subtext-color': '#9a3412'
+                '--subtext-color': '#9a3412',
+                '--input-bg': '#ffffff'
             },
             dark: {
                 '--bg-color': '#270e04',
@@ -97,7 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#f97316',
                 '--accent-hover': '#fb923c',
                 '--border-color': '#7c2d12',
-                '--subtext-color': '#fdba74'
+                '--subtext-color': '#fdba74',
+                '--input-bg': '#7c2d12'
             }
         },
         pink: {
@@ -109,7 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#be123c',
                 '--accent-hover': '#e11d48',
                 '--border-color': '#fecdd3',
-                '--subtext-color': '#9f1239'
+                '--subtext-color': '#9f1239',
+                '--input-bg': '#ffffff'
             },
             dark: {
                 '--bg-color': '#2a0410',
@@ -119,7 +128,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#f43f5e',
                 '--accent-hover': '#fb7185',
                 '--border-color': '#881337',
-                '--subtext-color': '#fecdd3'
+                '--subtext-color': '#fecdd3',
+                '--input-bg': '#881337'
             }
         },
         magenta: {
@@ -131,7 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#a21caf',
                 '--accent-hover': '#c026d3',
                 '--border-color': '#f5d0fe',
-                '--subtext-color': '#86198f'
+                '--subtext-color': '#86198f',
+                '--input-bg': '#ffffff'
             },
             dark: {
                 '--bg-color': '#28062b',
@@ -141,7 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#d946ef',
                 '--accent-hover': '#e879f9',
                 '--border-color': '#701a75',
-                '--subtext-color': '#f5d0fe'
+                '--subtext-color': '#f5d0fe',
+                '--input-bg': '#701a75'
             }
         }
     };
@@ -155,25 +167,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Apply Palette CSS Variables based on Theme Name & Light/Dark State
     function applyCurrentTheme() {
+        const isDark = document.body.classList.contains('dark-mode');
+        const modeKey = isDark ? 'dark' : 'light';
+        const activeTheme = localStorage.getItem('dashboard_accent_theme') || 'purple';
+        
+        const themeConfig = THEMES[activeTheme] || THEMES.purple;
+        const targetVars = themeConfig[modeKey];
+        Object.keys(targetVars).forEach(key => {
+            document.documentElement.style.setProperty(key, targetVars[key]);
+        });
+
         const customColor = localStorage.getItem('dashboard_custom_color');
         if (customColor) {
             document.documentElement.style.setProperty('--heading-color', customColor);
             document.documentElement.style.setProperty('--accent-color', customColor);
             document.documentElement.style.setProperty('--accent-hover', customColor);
-            return;
         }
-
-        const isDark = document.body.classList.contains('dark-mode');
-        const modeKey = isDark ? 'dark' : 'light';
-        const activeTheme = localStorage.getItem('dashboard_accent_theme') || 'purple';
-        
-        const themeConfig = THEMES[activeTheme];
-        if (!themeConfig) return;
-
-        const targetVars = themeConfig[modeKey];
-        Object.keys(targetVars).forEach(key => {
-            document.documentElement.style.setProperty(key, targetVars[key]);
-        });
     }
 
     // Toggle Dark Mode
@@ -254,6 +263,164 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize saved theme mode state
     const savedMode = localStorage.getItem('dashboard_theme_mode');
     setDarkMode(savedMode === 'dark');
+
+    // --------------------------------------------------
+    // SCRATCHPAD & STICKY NOTES LOGIC
+    // --------------------------------------------------
+    const scratchForm = document.getElementById('scratchpad-form');
+    const titleInput = document.getElementById('note-title');
+    const bodyInput = document.getElementById('note-body');
+    const priorityInput = document.getElementById('note-priority');
+    const colorPickerChips = document.querySelectorAll('.color-chip');
+    const selectedColorInput = document.getElementById('selected-note-color');
+    const notesGrid = document.getElementById('notes-grid');
+
+    let scratchNotes = JSON.parse(localStorage.getItem('scratchpad_notes')) || [];
+
+    // Helper to prevent XSS
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>"']/g, (m) => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        }[m]));
+    }
+
+    // Render Note Cards
+    function renderNotes() {
+        if (!notesGrid) return;
+        notesGrid.innerHTML = '';
+
+        scratchNotes.forEach(note => {
+            const card = document.createElement('div');
+            card.className = 'sticky-note';
+            card.style.backgroundColor = note.color;
+            card.dataset.id = note.id;
+
+            card.innerHTML = `
+                <div class="sticky-note-header">
+                    <h3 class="note-title-text">${escapeHtml(note.title)}</h3>
+                    <div class="note-actions">
+                        <button class="btn-icon btn-edit" title="Edit Note" aria-label="Edit Note">✏️</button>
+                        <button class="btn-icon btn-delete" title="Delete Note" aria-label="Delete Note">✕</button>
+                    </div>
+                </div>
+                <div class="sticky-note-body">${escapeHtml(note.body)}</div>
+                <div class="sticky-note-footer">
+                    <span class="priority-badge">${escapeHtml(note.priority)}</span>
+                    <span class="note-time">${escapeHtml(note.timestamp)}</span>
+                </div>
+            `;
+
+            card.querySelector('.btn-delete').addEventListener('click', () => deleteNote(note.id));
+            card.querySelector('.btn-edit').addEventListener('click', (e) => toggleNoteEdit(card, note.id, e.currentTarget));
+
+            notesGrid.appendChild(card);
+        });
+    }
+
+    function saveAndRenderNotes() {
+        localStorage.setItem('scratchpad_notes', JSON.stringify(scratchNotes));
+        renderNotes();
+    }
+
+    function deleteNote(id) {
+        scratchNotes = scratchNotes.filter(n => n.id !== id);
+        saveAndRenderNotes();
+    }
+
+    function toggleNoteEdit(card, id, editBtn) {
+        const titleEl = card.querySelector('.note-title-text');
+        const bodyEl = card.querySelector('.sticky-note-body');
+        const isEditing = titleEl.isContentEditable;
+
+        if (!isEditing) {
+            titleEl.contentEditable = 'true';
+            bodyEl.contentEditable = 'true';
+            titleEl.focus();
+            editBtn.textContent = '💾';
+            editBtn.title = 'Save Changes';
+        } else {
+            titleEl.contentEditable = 'false';
+            bodyEl.contentEditable = 'false';
+            editBtn.textContent = '✏️';
+            editBtn.title = 'Edit Note';
+
+            const targetNote = scratchNotes.find(n => n.id === id);
+            if (targetNote) {
+                targetNote.title = titleEl.innerText.trim() || 'Untitled Note';
+                targetNote.body = bodyEl.innerText.trim() || '';
+                localStorage.setItem('scratchpad_notes', JSON.stringify(scratchNotes));
+            }
+        }
+    }
+
+    function validateScratchpadForm() {
+        let isValid = true;
+        const titleError = document.getElementById('title-error');
+        const bodyError = document.getElementById('body-error');
+
+        if (titleError) titleError.textContent = '';
+        if (bodyError) bodyError.textContent = '';
+
+        if (!titleInput.value.trim()) {
+            if (titleError) titleError.textContent = 'Please enter a note title.';
+            isValid = false;
+        }
+
+        if (!bodyInput.value.trim()) {
+            if (bodyError) bodyError.textContent = 'Please enter some content for your note.';
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    if (colorPickerChips.length > 0) {
+        colorPickerChips.forEach(chip => {
+            chip.addEventListener('click', (e) => {
+                colorPickerChips.forEach(c => c.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                if (selectedColorInput) {
+                    selectedColorInput.value = e.currentTarget.dataset.color;
+                }
+            });
+        });
+    }
+
+    if (scratchForm) {
+        scratchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            if (!validateScratchpadForm()) return;
+
+            const newNote = {
+                id: Date.now().toString(),
+                title: titleInput.value.trim(),
+                body: bodyInput.value.trim(),
+                priority: priorityInput ? priorityInput.value : 'Medium',
+                color: selectedColorInput ? selectedColorInput.value : '#FFF59D',
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+
+            scratchNotes.unshift(newNote);
+            saveAndRenderNotes();
+
+            scratchForm.reset();
+            if (colorPickerChips.length > 0) {
+                colorPickerChips.forEach(c => c.classList.remove('active'));
+                colorPickerChips[0].classList.add('active');
+            }
+            if (selectedColorInput) {
+                selectedColorInput.value = '#FFF59D';
+            }
+        });
+    }
+
+    renderNotes();
 
     // --------------------------------------------------
     // ASSIGNMENTS & SHEETS INTEGRATION
@@ -419,7 +586,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Attach Dashboard Event Listeners
     if (syncBtn) {
         syncBtn.addEventListener('click', fetchAssignmentsFromSheets);
     }
@@ -440,144 +606,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     fetchAssignmentsFromSheets();
-
-    // --------------------------------------------------
-    // KEEP-STYLE FORM STICKY NOTES (PERSISTENT & STYLED)
-    // --------------------------------------------------
-    const keepForm = document.getElementById('keep-note-form');
-    const noteTitle = document.getElementById('note-title');
-    const noteBody = document.getElementById('note-body');
-    const noteTag = document.getElementById('note-tag');
-    const noteColor = document.getElementById('note-color');
-    const formError = document.getElementById('form-error');
-    const notesContainer = document.getElementById('notes-container');
-
-    function saveKeepNotesToStorage() {
-        if (!notesContainer) return;
-        const notes = [];
-        notesContainer.querySelectorAll('.sticky-card[data-keep-note="true"]').forEach(card => {
-            notes.push({
-                title: card.dataset.title || '',
-                body: card.dataset.body || '',
-                tag: card.dataset.tag || '',
-                color: card.dataset.color || 'yellow',
-                syncStatus: card.dataset.syncStatus || 'Saved locally'
-            });
-        });
-        localStorage.setItem('dashboard_keep_notes', JSON.stringify(notes));
-    }
-
-    function renderKeepNoteCard(data) {
-        if (!notesContainer) return;
-
-        const noteCard = document.createElement('div');
-        noteCard.className = `sticky-card color-${data.color}`;
-        noteCard.setAttribute('data-keep-note', 'true');
-        noteCard.dataset.title = data.title;
-        noteCard.dataset.body = data.body;
-        noteCard.dataset.tag = data.tag;
-        noteCard.dataset.color = data.color;
-        noteCard.dataset.syncStatus = data.syncStatus;
-
-        noteCard.innerHTML = `
-            <div>
-                ${data.title ? `<h3>${data.title}</h3>` : ''}
-                <p>${data.body}</p>
-            </div>
-            <div class="note-footer">
-                ${data.tag ? `<span class="tag-badge">${data.tag}</span>` : '<span></span>'}
-                <small class="sync-tag">${data.syncStatus}</small>
-            </div>
-            <button class="delete-note-btn" aria-label="Delete note" title="Delete note">&times;</button>
-        `;
-
-        const deleteBtn = noteCard.querySelector('.delete-note-btn');
-        if (deleteBtn) {
-            deleteBtn.addEventListener('click', () => {
-                noteCard.remove();
-                saveKeepNotesToStorage();
-            });
-        }
-
-        notesContainer.prepend(noteCard);
-    }
-
-    function loadSavedKeepNotes() {
-        const saved = localStorage.getItem('dashboard_keep_notes');
-        if (saved) {
-            try {
-                const notes = JSON.parse(saved);
-                if (Array.isArray(notes)) {
-                    notes.reverse().forEach(note => renderKeepNoteCard(note));
-                }
-            } catch (e) {
-                console.error('Error loading saved keep notes:', e);
-            }
-        }
-    }
-
-    if (keepForm && noteBody && formError && notesContainer) {
-        [noteTitle, noteBody, noteTag, noteColor].forEach(input => {
-            if (input) {
-                input.addEventListener('input', () => {
-                    formError.textContent = '';
-                    input.classList.remove('input-error');
-                });
-            }
-        });
-
-        keepForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const titleVal = noteTitle ? noteTitle.value.trim() : '';
-            const bodyVal = noteBody.value.trim();
-            let tagVal = noteTag ? noteTag.value.trim() : '';
-            const colorVal = noteColor ? noteColor.value : 'yellow';
-
-            if (!bodyVal) {
-                formError.textContent = 'Note content cannot be empty.';
-                noteBody.classList.add('input-error');
-                return;
-            }
-
-            if (tagVal && !tagVal.startsWith('#')) {
-                formError.textContent = 'Labels must start with a # symbol (e.g., #house).';
-                if (noteTag) noteTag.classList.add('input-error');
-                return;
-            }
-
-            let syncStatus = '';
-            try {
-                const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title: titleVal, body: bodyVal, tag: tagVal })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                syncStatus = `Synced (ID: ${data.id})`;
-            } catch (error) {
-                console.warn('Sync failed:', error);
-                syncStatus = 'Saved locally';
-            }
-
-            const noteData = {
-                title: titleVal,
-                body: bodyVal,
-                tag: tagVal,
-                color: colorVal,
-                syncStatus: syncStatus
-            };
-
-            renderKeepNoteCard(noteData);
-            saveKeepNotesToStorage();
-            keepForm.reset();
-        });
-
-        loadSavedKeepNotes();
-    }
 });
