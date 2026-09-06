@@ -74,14 +74,49 @@
     <main class="main-content-wrapper">
 
         <!-- FULL-WIDTH SCRATCHPAD AT THE TOP -->
-        <section id="sticky-note-section" class="card">
-            <h2>Quick Thoughts Scratchpad</h2>
-            <p class="subtext">Spill your thoughts or quickly jot down reminders:</p>
+<section class="card scratchpad-card" id="scratchpad">
+  <h2>Quick Thoughts Scratchpad</h2>
+  <p class="subtitle">Spill your thoughts or create a new note:</p>
 
-            <div class="note-input-container">
-                <input type="text" id="note-input" placeholder="Type a quick thought..." aria-label="New note text">
-                <button id="add-note-btn" class="btn-primary" type="button">Add Note</button>
-            </div>
+  <!-- Google Keep Style Form Container -->
+  <form id="keep-note-form" class="keep-form" novalidate>
+    <div id="form-error" class="error-message" aria-live="polite"></div>
+
+    <div class="form-group">
+      <label for="note-title">Title:</label>
+      <input type="text" id="note-title" name="noteTitle" placeholder="Title (e.g., Paint colors)">
+    </div>
+
+    <div class="form-group">
+      <label for="note-body">Note Content:</label>
+      <textarea id="note-body" name="noteBody" rows="3" placeholder="Take a note..."></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="note-tag">Label Tag:</label>
+        <input type="text" id="note-tag" name="noteTag" placeholder="#ideas or #school">
+      </div>
+
+      <div class="form-group">
+        <label for="note-color">Card Color:</label>
+        <select id="note-color" name="noteColor">
+          <option value="yellow">Butter Yellow</option>
+          <option value="green">Sage Green</option>
+          <option value="purple">Soft Purple</option>
+          <option value="white">Default White</option>
+        </select>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-primary">Pin Note</button>
+  </form>
+
+  <!-- Existing Sticky Notes Grid -->
+  <div id="notes-container" class="notes-grid">
+    <!-- Dynnamically added Keep-style notes appear here -->
+  </div>
+</section>
 
             <ul id="sticky-note-list" class="sticky-note-grid"></ul>
         </section>
