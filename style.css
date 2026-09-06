@@ -308,16 +308,22 @@ input:checked + .slider:before {
 }
 
 /* ==========================================
-   Scratchpad Container & Theme Accessibility
+   Scratchpad Container & Theme Accessibility Fixes
    ========================================== */
 .scratchpad-container {
-    margin: 0;
+    color: var(--text-color);
 }
 
-.scratchpad-container label,
 .scratchpad-container h2,
 .scratchpad-container h3 {
-    color: var(--heading-color, inherit);
+    color: var(--heading-color);
+}
+
+.scratchpad-subtext {
+    color: var(--subtext-color);
+    font-size: 0.9rem;
+    margin-top: -0.5rem;
+    margin-bottom: 1.25rem;
 }
 
 .scratchpad-form {
@@ -334,14 +340,25 @@ input:checked + .slider:before {
     gap: 0.35rem;
 }
 
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
 .scratchpad-input {
-    background-color: var(--input-bg, #ffffff);
-    color: var(--text-color, #111111);
-    border: 1px solid var(--border-color, #ccc);
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     padding: 0.6rem;
     font-family: inherit;
     font-size: 0.95rem;
+}
+
+.scratchpad-input::placeholder {
+    color: var(--subtext-color);
+    opacity: 0.7;
 }
 
 .error-message {
@@ -351,7 +368,7 @@ input:checked + .slider:before {
     font-weight: 600;
 }
 
-/* Color Chips Selector */
+/* Color Circle Chips Selector */
 .color-picker-chips {
     display: flex;
     gap: 10px;
@@ -360,13 +377,13 @@ input:checked + .slider:before {
 }
 
 .color-chip {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     border: 2px solid transparent;
     cursor: pointer;
     transition: transform 0.15s ease, border-color 0.15s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 .color-chip:hover {
@@ -375,7 +392,7 @@ input:checked + .slider:before {
 
 .color-chip.active, 
 .color-chip:focus {
-    border-color: var(--text-color, #222222);
+    border-color: var(--text-color);
     transform: scale(1.15);
     outline: none;
 }
@@ -384,10 +401,10 @@ input:checked + .slider:before {
     align-self: flex-start;
 }
 
-/* Square Sticky Notes Grid */
+/* Perfectly Square Sticky Notes Grid */
 .notes-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 1.25rem;
     margin-top: 1.5rem;
 }
@@ -396,13 +413,13 @@ input:checked + .slider:before {
     aspect-ratio: 1 / 1;
     width: 100%;
     box-sizing: border-box;
-    padding: 1rem;
+    padding: 1.1rem;
     border-radius: 8px;
     box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    color: #111111; /* Sticky note text defaults to dark for readability on pastel backgrounds */
+    color: #111111; /* Kept dark for readability on soft pastel sticky notes */
     position: relative;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -422,7 +439,7 @@ input:checked + .slider:before {
 
 .sticky-note-header h3 {
     margin: 0;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     color: #111111;
     word-break: break-word;
     outline: none;
@@ -437,7 +454,7 @@ input:checked + .slider:before {
     background: transparent;
     border: none;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     opacity: 0.6;
     padding: 2px 4px;
     border-radius: 4px;
@@ -453,7 +470,7 @@ input:checked + .slider:before {
     flex-grow: 1;
     overflow-y: auto;
     font-size: 0.9rem;
-    line-height: 1.3;
+    line-height: 1.35;
     margin-bottom: 0.5rem;
     word-break: break-word;
     outline: none;
@@ -461,9 +478,9 @@ input:checked + .slider:before {
 
 .sticky-note-header h3[contenteditable="true"],
 .sticky-note-body[contenteditable="true"] {
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.65);
     border-radius: 4px;
-    padding: 2px;
+    padding: 2px 4px;
 }
 
 .sticky-note-footer {
@@ -472,8 +489,8 @@ input:checked + .slider:before {
     align-items: center;
     font-size: 0.75rem;
     font-weight: 600;
-    opacity: 0.75;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    opacity: 0.8;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
     padding-top: 0.4rem;
 }
 
