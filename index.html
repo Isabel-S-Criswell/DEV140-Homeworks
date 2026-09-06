@@ -11,52 +11,52 @@
 </head>
 <body>
 
-<header id="main-header">
-    <h1>Isabel Criswell's Web Page</h1>
-    
-    <div class="header-right-controls">
-        <!-- Modern Toggle Switch -->
-        <label class="theme-switch" for="mode-toggle-checkbox" title="Toggle Light/Dark Mode">
-            <input type="checkbox" id="mode-toggle-checkbox" aria-label="Toggle dark mode">
-            <span class="slider round">
-                <span class="icon sun-icon">☀️</span>
-                <span class="icon moon-icon">🌙</span>
-            </span>
-        </label>
+    <header id="main-header">
+        <h1>Isabel Criswell's Web Page</h1>
+        
+        <div class="header-right-controls">
+            <!-- Theme Toggle Switch -->
+            <label class="theme-switch" for="mode-toggle-checkbox" title="Toggle Light/Dark Mode">
+                <input type="checkbox" id="mode-toggle-checkbox" aria-label="Toggle dark mode">
+                <span class="slider round">
+                    <span class="icon sun-icon">☀️</span>
+                    <span class="icon moon-icon">🌙</span>
+                </span>
+            </label>
 
-        <!-- Theme Color Picker Dropdown -->
-        <div class="theme-dropdown-wrapper">
-            <button id="theme-menu-toggle" class="theme-toggle-btn" title="Customize Accent Colors" aria-label="Customize Accent Colors">
-                ✏️
-            </button>
-            <div id="theme-dropdown-menu" class="theme-dropdown-menu">
-                <p class="dropdown-label">Choose Accent Theme</p>
-                <div class="theme-picker-container">
-                    <button class="theme-swatch swatch-purple active" data-theme="purple" title="Royal Purple"></button>
-                    <button class="theme-swatch swatch-teal" data-theme="teal" title="Ocean Teal"></button>
-                    <button class="theme-swatch swatch-green" data-theme="green" title="Emerald Green"></button>
-                    <button class="theme-swatch swatch-pink" data-theme="pink" title="Rose Pink"></button>
-                    <button class="theme-swatch swatch-orange" data-theme="orange" title="Sunset Orange"></button>
-                    <button class="theme-swatch swatch-magenta" data-theme="magenta" title="Magenta"></button>
-                    
-                    <label class="theme-swatch custom-picker-btn" for="custom-color-picker" title="Pick Custom Accent">
-                        <input type="color" id="custom-color-picker" value="#3B0764">
-                    </label>
+            <!-- Theme Color Picker Dropdown -->
+            <div class="theme-dropdown-wrapper">
+                <button id="theme-menu-toggle" class="theme-toggle-btn" title="Customize Accent Colors" aria-label="Customize Accent Colors">
+                    ✏️
+                </button>
+                <div id="theme-dropdown-menu" class="theme-dropdown-menu">
+                    <p class="dropdown-label">Choose Accent Theme</p>
+                    <div class="theme-picker-container">
+                        <button class="theme-swatch swatch-purple active" data-theme="purple" title="Royal Purple"></button>
+                        <button class="theme-swatch swatch-teal" data-theme="teal" title="Ocean Teal"></button>
+                        <button class="theme-swatch swatch-green" data-theme="green" title="Emerald Green"></button>
+                        <button class="theme-swatch swatch-pink" data-theme="pink" title="Rose Pink"></button>
+                        <button class="theme-swatch swatch-orange" data-theme="orange" title="Sunset Orange"></button>
+                        <button class="theme-swatch swatch-magenta" data-theme="magenta" title="Magenta"></button>
+                        
+                        <label class="theme-swatch custom-picker-btn" for="custom-color-picker" title="Pick Custom Accent">
+                            <input type="color" id="custom-color-picker" value="#3B0764">
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Navigation Links -->
-    <nav id="main-nav">
-        <ul>
-            <li><a href="#about" aria-label="Jump to About Me section">About Me</a></li>
-            <li><a href="#interests" aria-label="Jump to My Favorite Topics section">Interests</a></li>
-            <li><a href="#sticky-note-section" aria-label="Jump to Scratchpad section">Scratchpad</a></li>
-            <li><a href="#hw7-dashboard" aria-label="Jump to Dashboard section">Dashboard</a></li>
-        </ul>
-    </nav>
-</header>
+        <!-- Navigation Links -->
+        <nav id="main-nav">
+            <ul>
+                <li><a href="#about" aria-label="Jump to About Me section">About Me</a></li>
+                <li><a href="#interests" aria-label="Jump to My Favorite Topics section">Interests</a></li>
+                <li><a href="#scratchpad" aria-label="Jump to Scratchpad section">Scratchpad</a></li>
+                <li><a href="#hw7-dashboard" aria-label="Jump to Dashboard section">Dashboard</a></li>
+            </ul>
+        </nav>
+    </header>
 
     <div class="term-progress-container">
         <div class="term-progress-inner">
@@ -73,47 +73,46 @@
 
     <main class="main-content-wrapper">
 
-        <!-- FULL-WIDTH SCRATCHPAD AT THE TOP -->
-<section class="card scratchpad-card" id="scratchpad">
-  <h2>Quick Thoughts Scratchpad</h2>
-  <p class="subtitle">Spill your thoughts or create a new note:</p>
+        <!-- QUICK THOUGHTS SCRATCHPAD -->
+        <section class="card scratchpad-card" id="scratchpad">
+            <h2>Quick Thoughts Scratchpad</h2>
+            <p class="subtitle">Spill your thoughts or create a new note:</p>
 
-  <!-- Dynamic Error Display -->
-  <div id="form-error" class="error-message" aria-live="polite"></div>
+            <!-- Dynamic Error Display -->
+            <div id="form-error" class="error-message" aria-live="polite"></div>
 
-  <!-- Keep-Style Floating Form Bar -->
-  <form id="keep-note-form" class="keep-composer" novalidate>
-    <div class="composer-body">
-      <label for="note-title" class="visually-hidden">Note Title</label>
-      <input type="text" id="note-title" name="noteTitle" placeholder="Title (optional)" class="keep-input title-input">
+            <!-- Keep-Style Floating Form Bar -->
+            <form id="keep-note-form" class="keep-composer" novalidate>
+                <div class="composer-body">
+                    <label for="note-title" class="visually-hidden">Note Title</label>
+                    <input type="text" id="note-title" name="noteTitle" placeholder="Title (optional)" class="keep-input title-input">
 
-      <label for="note-body" class="visually-hidden">Note Content</label>
-      <textarea id="note-body" name="noteBody" rows="2" placeholder="Take a note..." class="keep-input body-input"></textarea>
-    </div>
+                    <label for="note-body" class="visually-hidden">Note Content</label>
+                    <textarea id="note-body" name="noteBody" rows="2" placeholder="Take a note..." class="keep-input body-input"></textarea>
+                </div>
 
-    <div class="composer-toolbar">
-      <div class="tool-group">
-        <label for="note-tag" class="visually-hidden">Label Tag</label>
-        <input type="text" id="note-tag" name="noteTag" placeholder="#tag" class="keep-input tag-input">
+                <div class="composer-toolbar">
+                    <div class="tool-group">
+                        <label for="note-tag" class="visually-hidden">Label Tag</label>
+                        <input type="text" id="note-tag" name="noteTag" placeholder="#tag" class="keep-input tag-input">
 
-        <label for="note-color" class="visually-hidden">Card Color</label>
-        <select id="note-color" name="noteColor" class="keep-select">
-          <option value="yellow">Butter Yellow</option>
-          <option value="green">Sage Green</option>
-          <option value="purple">Soft Purple</option>
-          <option value="white">Default White</option>
-        </select>
-      </div>
+                        <label for="note-color" class="visually-hidden">Card Color</label>
+                        <select id="note-color" name="noteColor" class="keep-select">
+                            <option value="yellow">Butter Yellow</option>
+                            <option value="green">Sage Green</option>
+                            <option value="purple">Soft Purple</option>
+                            <option value="white">Default White</option>
+                        </select>
+                    </div>
 
-      <button type="submit" class="btn-primary pin-btn">Pin Note</button>
-    </div>
-  </form>
+                    <button type="submit" class="btn-primary pin-btn">Pin Note</button>
+                </div>
+            </form>
 
-  <!-- Notes Grid Container -->
-  <div id="notes-container" class="notes-grid">
-    <!-- Existing & New Stickies Render Here -->
-  </div>
-</section>
+            <!-- Sticky Notes Container -->
+            <div id="notes-container" class="sticky-note-grid"></div>
+        </section>
+
         <!-- 2-COLUMN ROW FOR ABOUT ME & INTERESTS -->
         <div class="top-cards-row">
             
@@ -141,6 +140,7 @@
 
         </div>
 
+        <!-- ACADEMIC PLANNER & ASSIGNMENT HUB -->
         <section id="hw7-dashboard" class="card assignments-full-width-card">
             <h2>Academic Planner & Assignment Hub</h2>
 
@@ -162,7 +162,7 @@
                 </div>
 
                 <div class="week-selector">
-                    <button class="week-btn" data-week="ALL">All Weeks</button>
+                    <button class="week-btn active" data-week="ALL">All Weeks</button>
                     <button class="week-btn" data-week="1">W1</button>
                     <button class="week-btn" data-week="2">W2</button>
                     <button class="week-btn" data-week="3">W3</button>
