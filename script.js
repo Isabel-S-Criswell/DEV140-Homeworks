@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbw25hwFfwblp7pRj0uEhot_CXxtWwBTg6IfAq1JiGHUsrIUWxddt2I2G1idOuhNamA4/exec';
 
-    // Course mapping for full names and custom badge/border colors
     const COURSE_CONFIG = {
         'CTIA170': { name: 'CompTIA A+ Core 2 and Certification Practice', color: '#e63946' },
         'DEV140':  { name: 'Web Development', color: '#2a9d8f' },
@@ -10,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
         'AI125':   { name: 'Introduction to Applied AI for Data Analysis', color: '#7b2cbf' }
     };
 
-    // Global UI Theme Palettes (Light & Dark Variants)
     const THEMES = {
         purple: {
             light: {
@@ -158,14 +156,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // DOM Theme Element Selection
     const modeCheckbox = document.getElementById('mode-toggle-checkbox');
     const themeToggleBtn = document.getElementById('theme-menu-toggle');
     const themeDropdownMenu = document.getElementById('theme-dropdown-menu');
     const swatches = document.querySelectorAll('.theme-swatch');
     const customColorInput = document.getElementById('custom-color-picker');
 
-    // Apply Palette CSS Variables based on Theme Name & Light/Dark State
     function applyCurrentTheme() {
         const isDark = document.body.classList.contains('dark-mode');
         const modeKey = isDark ? 'dark' : 'light';
@@ -185,7 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Toggle Dark Mode
     function setDarkMode(isDark) {
         if (isDark) {
             document.body.classList.add('dark-mode');
@@ -201,7 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
         applyCurrentTheme();
     }
 
-    // Theme Menu Dropdown Controls
     if (themeToggleBtn && themeDropdownMenu) {
         themeToggleBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -215,7 +209,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Swatch Picker Controls
     swatches.forEach(swatch => {
         swatch.addEventListener('click', () => {
             const themeKey = swatch.getAttribute('data-theme');
@@ -235,7 +228,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Custom Color Picker
     if (customColorInput) {
         customColorInput.addEventListener('input', (e) => {
             const chosenColor = e.target.value;
@@ -260,7 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initialize saved theme mode state
     const savedMode = localStorage.getItem('dashboard_theme_mode');
     setDarkMode(savedMode === 'dark');
 
@@ -277,7 +268,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let scratchNotes = JSON.parse(localStorage.getItem('scratchpad_notes')) || [];
 
-    // Helper to prevent XSS
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>"']/g, (m) => ({
@@ -289,7 +279,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }[m]));
     }
 
-    // Render Note Cards
     function renderNotes() {
         if (!notesGrid) return;
         notesGrid.innerHTML = '';
@@ -302,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             card.innerHTML = `
                 <div class="sticky-note-header">
-                    <h3 class="note-title-text">${escapeHtml(note.title)}</h3>
+                    <h3 class="note-title-text">${escapeHtml(note.title || 'Untitled Note')}</h3>
                     <div class="note-actions">
                         <button class="btn-icon btn-edit" title="Edit Note" aria-label="Edit Note">✏️</button>
                         <button class="btn-icon btn-delete" title="Delete Note" aria-label="Delete Note">✕</button>
@@ -310,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="sticky-note-body">${escapeHtml(note.body)}</div>
                 <div class="sticky-note-footer">
-                    <span class="priority-badge">${escapeHtml(note.priority)}</span>
+                    <span class="priority-badge">Priority: ${escapeHtml(note.priority)}</span>
                     <span class="note-time">${escapeHtml(note.timestamp)}</span>
                 </div>
             `;
@@ -360,19 +349,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function validateScratchpadForm() {
         let isValid = true;
-        const titleError = document.getElementById('title-error');
         const bodyError = document.getElementById('body-error');
 
-        if (titleError) titleError.textContent = '';
         if (bodyError) bodyError.textContent = '';
 
-        if (!titleInput.value.trim()) {
-            if (titleError) titleError.textContent = 'Please enter a note title.';
-            isValid = false;
-        }
-
         if (!bodyInput.value.trim()) {
-            if (bodyError) bodyError.textContent = 'Please enter some content for your note.';
+            if (bodyError) bodyError.textContent = 'Note content cannot be empty!';
             isValid = false;
         }
 
