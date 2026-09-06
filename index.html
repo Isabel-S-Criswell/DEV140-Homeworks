@@ -73,49 +73,59 @@
 
     <main class="main-content-wrapper">
 
-        <!-- QUICK THOUGHTS SCRATCHPAD -->
-        <section class="card scratchpad-card" id="scratchpad">
+        <!-- SCRATCHPAD / STICKY NOTES CONTAINER -->
+        <section class="card scratchpad-container" id="scratchpad">
             <h2>Quick Thoughts Scratchpad</h2>
-            <p class="subtitle">Spill your thoughts or create a new note:</p>
+            <p class="scratchpad-subtext">Spill your thoughts or create a new note:</p>
 
-            <!-- Dynamic Error Display -->
-            <div id="form-error" class="error-message" aria-live="polite"></div>
-
-            <!-- Keep-Style Floating Form Bar -->
-            <form id="keep-note-form" class="keep-composer" novalidate>
-                <div class="composer-body">
-                    <label for="note-title" class="visually-hidden">Note Title</label>
-                    <input type="text" id="note-title" name="noteTitle" placeholder="Title (optional)" class="keep-input title-input">
-
-                    <label for="note-body" class="visually-hidden">Note Content</label>
-                    <textarea id="note-body" name="noteBody" rows="2" placeholder="Take a note..." class="keep-input body-input"></textarea>
+            <form id="scratchpad-form" class="scratchpad-form" novalidate>
+                <!-- Note Title -->
+                <div class="form-group">
+                    <label for="note-title">Title (optional)</label>
+                    <input type="text" id="note-title" class="scratchpad-input" placeholder="Title (optional)" />
+                    <span class="error-message" id="title-error"></span>
                 </div>
 
-                <div class="composer-toolbar">
-                    <div class="tool-group">
-                        <label for="note-tag" class="visually-hidden">Label Tag</label>
-                        <input type="text" id="note-tag" name="noteTag" placeholder="#tag" class="keep-input tag-input">
+                <!-- Note Body Content -->
+                <div class="form-group">
+                    <label for="note-body">Content</label>
+                    <textarea id="note-body" class="scratchpad-input" rows="3" placeholder="Take a note..."></textarea>
+                    <span class="error-message" id="body-error"></span>
+                </div>
 
-                        <label for="note-color" class="visually-hidden">Card Color</label>
-                        <select id="note-color" name="noteColor" class="keep-select">
-                            <option value="yellow">Butter Yellow</option>
-                            <option value="green">Sage Green</option>
-                            <option value="purple">Soft Purple</option>
-                            <option value="white">Default White</option>
-                        </select>
+                <!-- Priority Level (Replaces Tag) -->
+                <div class="form-group">
+                    <label for="note-priority">Priority Level</label>
+                    <select id="note-priority" class="scratchpad-input">
+                        <option value="Low">Priority: Low</option>
+                        <option value="Medium" selected>Priority: Medium</option>
+                        <option value="High">Priority: High</option>
+                        <option value="Urgent">Priority: Urgent</option>
+                    </select>
+                </div>
+
+                <!-- Note Color Selection (Circle Chips) -->
+                <div class="form-group">
+                    <label>Note Color</label>
+                    <div class="color-picker-chips" role="radiogroup" aria-label="Select Note Color">
+                        <button type="button" class="color-chip active" data-color="#FFF59D" style="background-color: #FFF59D;" aria-label="Butter Yellow"></button>
+                        <button type="button" class="color-chip" data-color="#E1BEE7" style="background-color: #E1BEE7;" aria-label="Soft Purple"></button>
+                        <button type="button" class="color-chip" data-color="#C8E6C9" style="background-color: #C8E6C9;" aria-label="Mint Green"></button>
+                        <button type="button" class="color-chip" data-color="#BBDEFB" style="background-color: #BBDEFB;" aria-label="Sky Blue"></button>
+                        <button type="button" class="color-chip" data-color="#FFCDD2" style="background-color: #FFCDD2;" aria-label="Soft Pink"></button>
                     </div>
-
-                    <button type="submit" class="btn-primary pin-btn">Pin Note</button>
+                    <input type="hidden" id="selected-note-color" value="#FFF59D">
                 </div>
+
+                <button type="submit" class="btn-primary btn-pin">Pin Note</button>
             </form>
 
-            <!-- Sticky Notes Container -->
-            <div id="notes-container" class="sticky-note-grid"></div>
+            <!-- Sticky Notes Grid -->
+            <div id="notes-grid" class="notes-grid"></div>
         </section>
 
-        <!-- 2-COLUMN ROW FOR ABOUT ME & INTERESTS -->
+        <!-- ABOUT ME & INTERESTS -->
         <div class="top-cards-row">
-            
             <section id="about" class="card">
                 <h2>About Me</h2>
                 <p>Hi there! I'm Isabel, a recent business administration graduate with a passion for data analysis and document preservation. Currently, I'm focusing on improving my skills in these areas and exploring new opportunities to apply my knowledge.</p>
@@ -137,10 +147,9 @@
                     <li>Stress Management Training</li>
                 </ul>
             </section>
-
         </div>
 
-        <!-- ACADEMIC PLANNER & ASSIGNMENT HUB -->
+        <!-- ACADEMIC PLANNER -->
         <section id="hw7-dashboard" class="card assignments-full-width-card">
             <h2>Academic Planner & Assignment Hub</h2>
 
