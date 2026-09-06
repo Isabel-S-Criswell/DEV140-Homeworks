@@ -21,9 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#3B0764',
                 '--accent-hover': '#581c87',
                 '--border-color': '#e2e8f0',
-                '--subtext-color': '#64748b',
-                '--sticky-bg': '#fef08a',
-                '--sticky-text': '#1e293b'
+                '--subtext-color': '#64748b'
             },
             dark: {
                 '--bg-color': '#0f0716',
@@ -33,9 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#9333ea',
                 '--accent-hover': '#a855f7',
                 '--border-color': '#3b0764',
-                '--subtext-color': '#c084fc',
-                '--sticky-bg': '#2e1065',
-                '--sticky-text': '#fef08a'
+                '--subtext-color': '#c084fc'
             }
         },
         teal: {
@@ -47,9 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#0d9488',
                 '--accent-hover': '#0f766e',
                 '--border-color': '#ccfbf1',
-                '--subtext-color': '#115e59',
-                '--sticky-bg': '#ccfbf1',
-                '--sticky-text': '#0f172a'
+                '--subtext-color': '#115e59'
             },
             dark: {
                 '--bg-color': '#042f2e',
@@ -59,9 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#14b8a6',
                 '--accent-hover': '#2dd4bf',
                 '--border-color': '#115e59',
-                '--subtext-color': '#99f6e4',
-                '--sticky-bg': '#134e4a',
-                '--sticky-text': '#ccfbf1'
+                '--subtext-color': '#99f6e4'
             }
         },
         green: {
@@ -73,9 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#047857',
                 '--accent-hover': '#059669',
                 '--border-color': '#a7f3d0',
-                '--subtext-color': '#047857',
-                '--sticky-bg': '#a7f3d0',
-                '--sticky-text': '#064e3b'
+                '--subtext-color': '#047857'
             },
             dark: {
                 '--bg-color': '#022c22',
@@ -85,9 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#10b981',
                 '--accent-hover': '#34d399',
                 '--border-color': '#047857',
-                '--subtext-color': '#a7f3d0',
-                '--sticky-bg': '#065f46',
-                '--sticky-text': '#a7f3d0'
+                '--subtext-color': '#a7f3d0'
             }
         },
         orange: {
@@ -99,9 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#c2410c',
                 '--accent-hover': '#ea580c',
                 '--border-color': '#ffedd5',
-                '--subtext-color': '#9a3412',
-                '--sticky-bg': '#fed7aa',
-                '--sticky-text': '#431407'
+                '--subtext-color': '#9a3412'
             },
             dark: {
                 '--bg-color': '#270e04',
@@ -111,9 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#f97316',
                 '--accent-hover': '#fb923c',
                 '--border-color': '#7c2d12',
-                '--subtext-color': '#fdba74',
-                '--sticky-bg': '#7c2d12',
-                '--sticky-text': '#fed7aa'
+                '--subtext-color': '#fdba74'
             }
         },
         pink: {
@@ -125,9 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#be123c',
                 '--accent-hover': '#e11d48',
                 '--border-color': '#fecdd3',
-                '--subtext-color': '#9f1239',
-                '--sticky-bg': '#fecdd3',
-                '--sticky-text': '#4c0519'
+                '--subtext-color': '#9f1239'
             },
             dark: {
                 '--bg-color': '#2a0410',
@@ -137,9 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#f43f5e',
                 '--accent-hover': '#fb7185',
                 '--border-color': '#881337',
-                '--subtext-color': '#fecdd3',
-                '--sticky-bg': '#881337',
-                '--sticky-text': '#fecdd3'
+                '--subtext-color': '#fecdd3'
             }
         },
         magenta: {
@@ -151,9 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#a21caf',
                 '--accent-hover': '#c026d3',
                 '--border-color': '#f5d0fe',
-                '--subtext-color': '#86198f',
-                '--sticky-bg': '#f5d0fe',
-                '--sticky-text': '#701a75'
+                '--subtext-color': '#86198f'
             },
             dark: {
                 '--bg-color': '#28062b',
@@ -163,9 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 '--accent-color': '#d946ef',
                 '--accent-hover': '#e879f9',
                 '--border-color': '#701a75',
-                '--subtext-color': '#f5d0fe',
-                '--sticky-bg': '#701a75',
-                '--sticky-text': '#f5d0fe'
+                '--subtext-color': '#f5d0fe'
             }
         }
     };
@@ -443,72 +419,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --------------------------------------------------
-    // STICKY NOTE SCRATCHPAD (QUICK TEXT NOTES)
-    // --------------------------------------------------
-    const noteInput = document.getElementById('note-input');
-    const addNoteBtn = document.getElementById('add-note-btn');
-    const stickyNoteList = document.getElementById('sticky-note-list');
-
-    function saveNotesToLocalStorage() {
-        if (!stickyNoteList) return;
-        const notes = [];
-        stickyNoteList.querySelectorAll('.sticky-card p').forEach(p => {
-            notes.push(p.textContent);
-        });
-        localStorage.setItem('dashboard_sticky_notes', JSON.stringify(notes));
-    }
-
-    function renderStickyNoteElement(textValue) {
-        if (!stickyNoteList) return;
-
-        const li = document.createElement('li');
-        li.className = 'sticky-card';
-
-        const p = document.createElement('p');
-        p.textContent = textValue;
-
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'delete-note-btn';
-        deleteBtn.innerHTML = '&times;';
-        deleteBtn.title = 'Delete note';
-        deleteBtn.setAttribute('aria-label', 'Delete note');
-
-        deleteBtn.addEventListener('click', () => {
-            li.remove();
-            saveNotesToLocalStorage();
-        });
-
-        li.appendChild(p);
-        li.appendChild(deleteBtn);
-        stickyNoteList.appendChild(li);
-    }
-
-    function loadSavedNotes() {
-        const savedNotes = localStorage.getItem('dashboard_sticky_notes');
-        if (savedNotes) {
-            try {
-                const notesArray = JSON.parse(savedNotes);
-                if (Array.isArray(notesArray)) {
-                    notesArray.forEach(noteText => renderStickyNoteElement(noteText));
-                }
-            } catch (e) {
-                console.error('Error parsing stored sticky notes:', e);
-            }
-        }
-    }
-
-    function createStickyNote() {
-        if (!noteInput) return;
-        const textValue = noteInput.value.trim();
-        if (!textValue) return;
-
-        renderStickyNoteElement(textValue);
-        saveNotesToLocalStorage();
-
-        noteInput.value = '';
-    }
-
     // Attach Dashboard Event Listeners
     if (syncBtn) {
         syncBtn.addEventListener('click', fetchAssignmentsFromSheets);
@@ -529,17 +439,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    if (addNoteBtn && noteInput) {
-        addNoteBtn.addEventListener('click', createStickyNote);
-        noteInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                createStickyNote();
-            }
-        });
-    }
-
-    // Initialize Scratchpad Notes and Fetch Sheets Data
-    loadSavedNotes();
     fetchAssignmentsFromSheets();
 
     // --------------------------------------------------
@@ -553,7 +452,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const formError = document.getElementById('form-error');
     const notesContainer = document.getElementById('notes-container');
 
-    // Save Keep-style notes to LocalStorage
     function saveKeepNotesToStorage() {
         if (!notesContainer) return;
         const notes = [];
@@ -562,19 +460,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 title: card.dataset.title || '',
                 body: card.dataset.body || '',
                 tag: card.dataset.tag || '',
-                color: card.dataset.color || 'default',
+                color: card.dataset.color || 'yellow',
                 syncStatus: card.dataset.syncStatus || 'Saved locally'
             });
         });
         localStorage.setItem('dashboard_keep_notes', JSON.stringify(notes));
     }
 
-    // Render Keep note element as a proper sticky note
     function renderKeepNoteCard(data) {
         if (!notesContainer) return;
 
         const noteCard = document.createElement('div');
-        noteCard.className = `sticky-card sticky-note color-${data.color}`;
+        noteCard.className = `sticky-card color-${data.color}`;
         noteCard.setAttribute('data-keep-note', 'true');
         noteCard.dataset.title = data.title;
         noteCard.dataset.body = data.body;
@@ -582,21 +479,16 @@ document.addEventListener('DOMContentLoaded', () => {
         noteCard.dataset.color = data.color;
         noteCard.dataset.syncStatus = data.syncStatus;
 
-        noteCard.style.backgroundColor = 'var(--sticky-bg)';
-        noteCard.style.color = 'var(--sticky-text)';
-        noteCard.style.padding = '1rem';
-        noteCard.style.borderRadius = '8px';
-        noteCard.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
-        noteCard.style.position = 'relative';
-
         noteCard.innerHTML = `
-            ${data.title ? `<h3 style="margin-top:0; margin-bottom:0.5rem; font-size:1.1rem; color:inherit;">${data.title}</h3>` : ''}
-            <p style="margin:0 0 0.75rem 0; font-size:0.95rem; line-height:1.4; color:inherit;">${data.body}</p>
-            <div class="note-footer" style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; opacity:0.85;">
-                ${data.tag ? `<span class="tag-badge" style="font-weight:600;">${data.tag}</span>` : '<span></span>'}
+            <div>
+                ${data.title ? `<h3>${data.title}</h3>` : ''}
+                <p>${data.body}</p>
+            </div>
+            <div class="note-footer">
+                ${data.tag ? `<span class="tag-badge">${data.tag}</span>` : '<span></span>'}
                 <small class="sync-tag">${data.syncStatus}</small>
             </div>
-            <button class="delete-note-btn" aria-label="Delete note" style="position:absolute; top:8px; right:8px; background:none; border:none; cursor:pointer; font-size:1.2rem; color:inherit; opacity:0.7;">&times;</button>
+            <button class="delete-note-btn" aria-label="Delete note" title="Delete note">&times;</button>
         `;
 
         const deleteBtn = noteCard.querySelector('.delete-note-btn');
@@ -610,14 +502,12 @@ document.addEventListener('DOMContentLoaded', () => {
         notesContainer.prepend(noteCard);
     }
 
-    // Load saved Keep-style notes on page load
     function loadSavedKeepNotes() {
         const saved = localStorage.getItem('dashboard_keep_notes');
         if (saved) {
             try {
                 const notes = JSON.parse(saved);
                 if (Array.isArray(notes)) {
-                    // Render in reverse order so prepend keeps correct sequence
                     notes.reverse().forEach(note => renderKeepNoteCard(note));
                 }
             } catch (e) {
@@ -627,7 +517,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (keepForm && noteBody && formError && notesContainer) {
-        // Clear errors on input change
         [noteTitle, noteBody, noteTag, noteColor].forEach(input => {
             if (input) {
                 input.addEventListener('input', () => {
@@ -643,7 +532,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const titleVal = noteTitle ? noteTitle.value.trim() : '';
             const bodyVal = noteBody.value.trim();
             let tagVal = noteTag ? noteTag.value.trim() : '';
-            const colorVal = noteColor ? noteColor.value : 'default';
+            const colorVal = noteColor ? noteColor.value : 'yellow';
 
             if (!bodyVal) {
                 formError.textContent = 'Note content cannot be empty.';
