@@ -10,7 +10,35 @@
     --subtext-color: #64748b;
     --input-bg: #ffffff;
 }
+/* CIRCULAR NOTE COLOR CHIPS */
+.color-picker-chips {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 6px;
+}
 
+.color-chip {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.color-chip:hover {
+    transform: scale(1.15);
+}
+
+.color-chip.active, 
+.color-chip:focus {
+    border-color: var(--text-color);
+    transform: scale(1.2);
+    box-shadow: 0 0 0 2px var(--card-bg), 0 0 0 4px var(--accent-color);
+    outline: none;
+}
 /* BASE STYLES */
 body {
     background-color: var(--bg-color);
