@@ -542,3 +542,78 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSavedNotes();
     fetchAssignmentsFromSheets();
 });
+const keepForm = document.getElementById('keep-note-form');
+const noteTitle = document.getElementById('note-title');
+const noteBody = document.getElementById('note-body');
+const noteTag = document.getElementById('note-tag');
+const noteColor = document.getElementById('note-color');
+const formError = document.getElementById('form-error');
+const notesContainer = document.getElementById('notes-container');
+
+// Requirement 3: Clear errors live as user types/corrects fields
+[noteTitle, noteBody, noteTag, noteColor].forEach(input => {
+  input.addEventListener('input', () => {
+    formError.textContent = '';
+    input.classList.remove('input-error');
+  });
+});
+
+keepForm.addEventListener('submit', async (e) => {
+  // Requirement 2: Intercept form submit
+  e.preventDefault();
+
+  const titleVal = noteTitle.value.trim();
+  const bodyVal = noteBody.value.trim();
+  let tagVal = noteTag.value.trim();
+  const colorVal = noteColor.value;
+
+  // Requirement 2: Check for empty required fields
+  if (!bodyVal) {
+    formError.textContent = 'Note content cannot be empty.';
+    noteBody.classList.add('input-error');
+    return;
+  }
+
+  // Requirement 3: Format validation (Ensure tags start with # if provided)
+  if (tagVal && !tagVal.startsWith('#')) {
+    formError.textContent = 'Labels must start with a # symbol (e.g., #house).';
+    noteTag.classList.add('input-error');
+    return;
+  }
+
+  // Requirement 4 (Bonus): API Fetch with error handling
+  let syncStatus = '';
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: titleVal, body: bodyVal, tag: tagVal })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    syncStatus = `Synced (ID: ${data.id})`;
+  } catch (error) {
+    console.warn('Sync failed:', error);
+    syncStatus = 'Saved locally';
+  }
+
+  // Render Keep-Style Note Card in DOM
+  const noteCard = document.createElement('div');
+  noteCard.className = `sticky-note color-${colorVal}`;
+  noteCard.innerHTML = `
+    ${titleVal ? `<h3>${titleVal}</h3>` : ''}
+    <p>${bodyVal}</p>
+    <div class="note-footer">
+      ${tagVal ? `<span class="tag-badge">${tagVal}</span>` : ''}
+      <small class="sync-tag">${syncStatus}</small>
+    </div>
+    <button class="delete-btn" aria-label="Delete note" onclick="this.parentElement.remove()">×</button>
+  `;
+
+  notesContainer.prepend(noteCard);
+  keepForm.reset();
+});
