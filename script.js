@@ -361,6 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return isValid;
     }
 
+    // 1. CHIP SELECTION LISTENER: Updates active ring visual and hidden input value
     if (colorPickerChips.length > 0) {
         colorPickerChips.forEach(chip => {
             chip.addEventListener('click', (e) => {
@@ -373,6 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 2. FORM SUBMISSION & CHIP RESET: Captures note & resets chips back to default
     if (scratchForm) {
         scratchForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -392,6 +394,8 @@ document.addEventListener('DOMContentLoaded', () => {
             saveAndRenderNotes();
 
             scratchForm.reset();
+
+            // Reset chip active state to first default chip
             if (colorPickerChips.length > 0) {
                 colorPickerChips.forEach(c => c.classList.remove('active'));
                 colorPickerChips[0].classList.add('active');
