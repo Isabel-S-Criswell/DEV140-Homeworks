@@ -14,6 +14,11 @@
     <header id="main-header">
         <h1>Isabel Criswell's Web Page</h1>
         
+        <!-- Header Weather Widget (API Fetch Bonus) -->
+        <div id="weather-widget" class="weather-widget">
+            <span id="weather-text">⏳ Loading weather...</span>
+        </div>
+
         <div class="header-right-controls">
             <!-- Theme Toggle Switch -->
             <label class="theme-switch" for="mode-toggle-checkbox" title="Toggle Light/Dark Mode">
@@ -79,21 +84,28 @@
             <p class="scratchpad-subtext">Spill your thoughts or create a new note:</p>
 
             <form id="scratchpad-form" class="scratchpad-form" novalidate>
-                <!-- Note Title -->
+                <!-- Field 1: Title -->
                 <div class="form-group">
                     <label for="note-title">Title (optional)</label>
                     <input type="text" id="note-title" class="scratchpad-input" placeholder="Title (optional)" />
                     <span class="error-message" id="title-error"></span>
                 </div>
 
-                <!-- Note Body Content -->
+                <!-- Field 2: Content (Required Empty Check) -->
                 <div class="form-group">
-                    <label for="note-body">Content</label>
+                    <label for="note-body">Content <span style="color:#e53935">*</span></label>
                     <textarea id="note-body" class="scratchpad-input" rows="3" placeholder="Take a note..."></textarea>
                     <span class="error-message" id="body-error"></span>
                 </div>
 
-                <!-- Priority Level (Replaces Tag) -->
+                <!-- Field 3: Author Email (Required Format Check) -->
+                <div class="form-group">
+                    <label for="note-email">Author Email <span style="color:#e53935">*</span></label>
+                    <input type="email" id="note-email" class="scratchpad-input" placeholder="name@example.com" />
+                    <span class="error-message" id="email-error"></span>
+                </div>
+
+                <!-- Field 4: Priority Level & Category -->
                 <div class="form-group">
                     <label for="note-priority">Priority Level</label>
                     <select id="note-priority" class="scratchpad-input">
@@ -104,18 +116,18 @@
                     </select>
                 </div>
 
-<!-- Note Color Selection (Circle Chips) -->
-<div class="form-group">
-    <label>Note Color</label>
-    <div class="color-picker-chips" role="radiogroup" aria-label="Select Note Color">
-        <button type="button" class="color-chip active" data-color="#FFF59D" style="background-color: #FFF59D;" aria-label="Butter Yellow" title="Butter Yellow"></button>
-        <button type="button" class="color-chip" data-color="#E1BEE7" style="background-color: #E1BEE7;" aria-label="Soft Purple" title="Soft Purple"></button>
-        <button type="button" class="color-chip" data-color="#C8E6C9" style="background-color: #C8E6C9;" aria-label="Mint Green" title="Mint Green"></button>
-        <button type="button" class="color-chip" data-color="#BBDEFB" style="background-color: #BBDEFB;" aria-label="Sky Blue" title="Sky Blue"></button>
-        <button type="button" class="color-chip" data-color="#FFCDD2" style="background-color: #FFCDD2;" aria-label="Soft Pink" title="Soft Pink"></button>
-    </div>
-    <input type="hidden" id="selected-note-color" value="#FFF59D">
-</div>
+                <!-- Field 5: Note Color Selection -->
+                <div class="form-group">
+                    <label>Note Color</label>
+                    <div class="color-picker-chips" role="radiogroup" aria-label="Select Note Color">
+                        <button type="button" class="color-chip active" data-color="#FFF59D" style="background-color: #FFF59D;" aria-label="Butter Yellow" title="Butter Yellow"></button>
+                        <button type="button" class="color-chip" data-color="#E1BEE7" style="background-color: #E1BEE7;" aria-label="Soft Purple" title="Soft Purple"></button>
+                        <button type="button" class="color-chip" data-color="#C8E6C9" style="background-color: #C8E6C9;" aria-label="Mint Green" title="Mint Green"></button>
+                        <button type="button" class="color-chip" data-color="#BBDEFB" style="background-color: #BBDEFB;" aria-label="Sky Blue" title="Sky Blue"></button>
+                        <button type="button" class="color-chip" data-color="#FFCDD2" style="background-color: #FFCDD2;" aria-label="Soft Pink" title="Soft Pink"></button>
+                    </div>
+                    <input type="hidden" id="selected-note-color" value="#FFF59D">
+                </div>
 
                 <button type="submit" class="btn-primary btn-pin">Pin Note</button>
             </form>
