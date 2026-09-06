@@ -230,7 +230,6 @@ header#main-header h1 {
     transform: scale(1.1);
 }
 
-/* VISUAL COLOR PRESET SWATCHES */
 .swatch-purple  { background-color: #3B0764; }
 .swatch-teal    { background-color: #0d9488; }
 .swatch-green   { background-color: #047857; }
@@ -238,7 +237,6 @@ header#main-header h1 {
 .swatch-orange  { background-color: #c2410c; }
 .swatch-magenta { background-color: #a21caf; }
 
-/* VISUAL CUSTOM COLOR PICKER BUTTON */
 .custom-picker-btn {
     position: relative;
     background: conic-gradient(red, yellow, lime, cyan, blue, magenta, red);
@@ -258,7 +256,7 @@ header#main-header h1 {
     cursor: pointer;
 }
 
-/* FULL-WIDTH ACROSS SCREEN TERM PROGRESS BAR */
+/* TERM PROGRESS BAR */
 .term-progress-container {
     width: 100%;
     background-color: var(--card-bg);
@@ -300,7 +298,7 @@ header#main-header h1 {
     transition: width 0.4s ease, background-color 0.3s ease;
 }
 
-/* MAIN CONTENT CONTAINER */
+/* MAIN CONTENT LAYOUT */
 .main-content-wrapper {
     max-width: 1200px;
     margin: 30px auto;
@@ -310,7 +308,6 @@ header#main-header h1 {
     gap: 30px;
 }
 
-/* TOP SECTION CARDS */
 .top-cards-row {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -333,20 +330,91 @@ header#main-header h1 {
     margin-top: 15px;
 }
 
-/* STICKY NOTES SECTION */
-.note-input-container {
+/* ACCESSIBLE HIDDEN LABELS */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* KEEP COMPOSER FORM */
+.keep-composer {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 20px;
     display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
 }
 
-.note-input-container input {
-    flex: 1;
+.composer-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
+.keep-field {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--text-color);
+    font-family: inherit;
+    width: 100%;
+}
+
+.title-field {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.body-field {
+    resize: vertical;
+    font-size: 0.875rem;
+}
+
+.composer-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border-color);
+    padding-top: 8px;
+    margin-top: 4px;
+}
+
+.composer-options {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tag-field {
+    width: 80px;
+    font-size: 0.8rem;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.keep-select {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--card-bg);
+    color: var(--text-color);
+}
+
+/* STICKY NOTES GRID */
 .sticky-note-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 12px;
     list-style: none;
     padding: 0;
@@ -362,18 +430,12 @@ header#main-header h1 {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 90px;
+    min-height: 110px;
     word-break: break-word;
     transform: rotate(-1deg);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, color 0.3s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
     border: 1px solid var(--border-color);
-}
-
-.sticky-card p {
-    margin: 0;
-    font-size: 0.875rem;
-    line-height: 1.3;
-    color: var(--sticky-text);
+    position: relative;
 }
 
 .sticky-card:nth-child(even) {
@@ -384,6 +446,42 @@ header#main-header h1 {
     transform: scale(1.04) rotate(0deg);
     box-shadow: 4px 8px 12px rgba(0, 0, 0, 0.2);
 }
+
+.sticky-card h3 {
+    margin: 0 0 6px 0;
+    font-size: 0.9rem;
+    color: #1e293b;
+    font-weight: 700;
+}
+
+.sticky-card p {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.3;
+    color: #1e293b;
+}
+
+.note-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 10px;
+    font-size: 0.7rem;
+    color: #475569;
+}
+
+.tag-badge {
+    background: rgba(0, 0, 0, 0.08);
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+/* COLOR VARIANTS */
+.sticky-card.color-yellow { background-color: #fef08a; }
+.sticky-card.color-green  { background-color: #dcfce7; }
+.sticky-card.color-purple { background-color: #f3e8ff; }
+.sticky-card.color-white  { background-color: #ffffff; border: 1px solid var(--border-color); }
 
 .delete-note-btn {
     align-self: flex-end;
@@ -396,14 +494,27 @@ header#main-header h1 {
     cursor: pointer;
     padding: 0;
     line-height: 1;
-    margin-top: 6px;
 }
 
 .delete-note-btn:hover {
     opacity: 1;
 }
 
-/* BOTTOM SECTION ASSIGNMENTS */
+/* VALIDATION ERROR STATES */
+.input-error {
+    outline: 2px solid #ef4444 !important;
+    border-radius: 4px;
+}
+
+.error-message {
+    color: #dc2626;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    min-height: 1.2rem;
+}
+
+/* ASSIGNMENTS SECTION */
 .assignments-full-width-card {
     width: 100%;
     box-sizing: border-box;
@@ -425,8 +536,8 @@ select, input[type="text"] {
     padding: 8px 12px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    background: var(--card-bg); /* Use card background for inputs */
-    color: var(--text-color);   /* Dynamic text color */
+    background: var(--card-bg);
+    color: var(--text-color);
 }
 
 .btn-primary {
@@ -444,7 +555,6 @@ select, input[type="text"] {
     background-color: var(--accent-hover);
 }
 
-/* WEEK PILLS */
 .week-selector {
     display: flex;
     gap: 6px;
@@ -468,7 +578,6 @@ select, input[type="text"] {
     border-color: var(--accent-color);
 }
 
-/* DYNAMIC ASSIGNMENT CARDS */
 .dynamic-list {
     list-style: none;
     padding: 0;
@@ -518,20 +627,4 @@ footer {
     .top-cards-row {
         grid-template-columns: 1fr;
     }
-}
-.color-yellow { background-color: #fef08a; } /* Butter Yellow */
-.color-green  { background-color: #dcfce7; } /* Sage Green */
-.color-purple { background-color: #f3e8ff; } /* Soft Purple */
-.color-white  { background-color: #ffffff; border: 1px solid #e2e8f0; }
-
-.input-error {
-  border: 2px solid #ef4444 !important;
-  background-color: #fef2f2;
-}
-
-.error-message {
-  color: #dc2626;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-  min-height: 1.25rem;
 }
