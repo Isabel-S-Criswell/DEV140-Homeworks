@@ -10,6 +10,18 @@
     --subtext-color: #64748b;
     --input-bg: #ffffff;
 }
+
+/* WEATHER WIDGET IN HEADER */
+.weather-widget {
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 4px 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    color: #ffffff;
+}
+
 /* CIRCULAR NOTE COLOR CHIPS */
 .color-picker-chips {
     display: flex;
@@ -39,6 +51,7 @@
     box-shadow: 0 0 0 2px var(--card-bg), 0 0 0 4px var(--accent-color);
     outline: none;
 }
+
 /* BASE STYLES */
 body {
     background-color: var(--bg-color);
@@ -335,9 +348,7 @@ input:checked + .slider:before {
     margin-top: 15px;
 }
 
-/* ==========================================
-   Scratchpad Container & Theme Accessibility Fixes
-   ========================================== */
+/* SCRATCHPAD & THEME STYLES */
 .scratchpad-container {
     color: var(--text-color);
 }
@@ -392,44 +403,13 @@ input:checked + .slider:before {
 .error-message {
     font-size: 0.8rem;
     color: #e53935;
-    min-height: 1rem;
+    min-height: 1.1rem;
     font-weight: 600;
+    display: block;
+    margin-top: 2px;
 }
 
-/* Color Circle Chips Selector */
-.color-picker-chips {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    margin-top: 4px;
-}
-
-.color-chip {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: transform 0.15s ease, border-color 0.15s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-}
-
-.color-chip:hover {
-    transform: scale(1.1);
-}
-
-.color-chip.active, 
-.color-chip:focus {
-    border-color: var(--text-color);
-    transform: scale(1.15);
-    outline: none;
-}
-
-.btn-pin {
-    align-self: flex-start;
-}
-
-/* Perfectly Square Sticky Notes Grid */
+/* STICKY NOTES GRID */
 .notes-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -447,7 +427,7 @@ input:checked + .slider:before {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    color: #111111; /* Kept dark for readability on soft pastel sticky notes */
+    color: #111111;
     position: relative;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -502,13 +482,6 @@ input:checked + .slider:before {
     margin-bottom: 0.5rem;
     word-break: break-word;
     outline: none;
-}
-
-.sticky-note-header h3[contenteditable="true"],
-.sticky-note-body[contenteditable="true"] {
-    background-color: rgba(255, 255, 255, 0.65);
-    border-radius: 4px;
-    padding: 2px 4px;
 }
 
 .sticky-note-footer {
@@ -601,35 +574,12 @@ select, input[type="text"] {
     margin: 0;
 }
 
-.assignment-card {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-left: 6px solid #6c757d;
-    padding: 12px 16px;
-    border-radius: 6px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.course-tag {
-    color: #ffffff;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
 .badge {
     padding: 4px 8px;
     border-radius: 12px;
     font-size: 0.75rem;
     font-weight: 600;
 }
-
-.badge-complete { background: #dcfce7; color: #166534; }
-.badge-pending { background: #fef9c3; color: #854d0e; }
 
 /* FOOTER */
 footer {
@@ -639,7 +589,6 @@ footer {
     font-size: 0.85rem;
 }
 
-/* RESPONSIVE LAYOUT */
 @media (max-width: 900px) {
     .top-cards-row {
         grid-template-columns: 1fr;
