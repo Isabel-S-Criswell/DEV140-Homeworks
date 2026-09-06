@@ -2,13 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbw25hwFfwblp7pRj0uEhot_CXxtWwBTg6IfAq1JiGHUsrIUWxddt2I2G1idOuhNamA4/exec';
 
-    const COURSE_CONFIG = {
-        'CTIA170': { name: 'CompTIA A+ Core 2 and Certification Practice', color: '#e63946' },
-        'DEV140':  { name: 'Web Development', color: '#2a9d8f' },
-        'DEV150':  { name: 'Linux & Command Line Foundations', color: '#7b2cbf' },
-        'AI125':   { name: 'Introduction to Applied AI for Data Analysis', color: '#7b2cbf' }
-    };
-
     const THEMES = {
         purple: {
             light: {
@@ -160,7 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggleBtn = document.getElementById('theme-menu-toggle');
     const themeDropdownMenu = document.getElementById('theme-dropdown-menu');
     const swatches = document.querySelectorAll('.theme-swatch');
-    const customColorInput = document.getElementById('custom-color-picker');
 
     function applyCurrentTheme() {
         const isDark = document.body.classList.contains('dark-mode');
@@ -172,28 +164,21 @@ document.addEventListener('DOMContentLoaded', () => {
         Object.keys(targetVars).forEach(key => {
             document.documentElement.style.setProperty(key, targetVars[key]);
         });
-
-        const customColor = localStorage.getItem('dashboard_custom_color');
-        if (customColor) {
-            document.documentElement.style.setProperty('--heading-color', customColor);
-            document.documentElement.style.setProperty('--accent-color', customColor);
-            document.documentElement.style.setProperty('--accent-hover', customColor);
-        }
     }
 
-    function setDarkMode(isDark) {
-        if (isDark) {
+    if (modeCheckbox) {
+        const savedMode = localStorage.getItem('dashboard_theme_mode') || 'light';
+        if (savedMode === 'dark') {
             document.body.classList.add('dark-mode');
-        } else {
-            document.body.classList.remove('dark-mode');
+            modeCheckbox.checked = true;
         }
-
-        if (modeCheckbox) {
-            modeCheckbox.checked = isDark;
-        }
-
-        localStorage.setItem('dashboard_theme_mode', isDark ? 'dark' : 'light');
         applyCurrentTheme();
+
+        modeCheckbox.addEventListener('change', () => {
+            document.body.classList.toggle('dark-mode', modeCheckbox.checked);
+            localStorage.setItem('dashboard_theme_mode', modeCheckbox.checked ? 'dark' : 'light');
+            applyCurrentTheme();
+        });
     }
 
     if (themeToggleBtn && themeDropdownMenu) {
@@ -215,8 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!themeKey) return;
 
             localStorage.setItem('dashboard_accent_theme', themeKey);
-            localStorage.removeItem('dashboard_custom_color');
-
             swatches.forEach(s => s.classList.remove('active'));
             swatch.classList.add('active');
 
@@ -228,55 +211,123 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    if (customColorInput) {
-        customColorInput.addEventListener('input', (e) => {
-            const chosenColor = e.target.value;
+    // --------------------------------------------------
+    // BONUS REQUIREMENT: WEATHER API FETCH
+    // --------------------------------------------------
+    async function fetchWeather() {
+        const weatherText = document.getElementById('weather-text');
+        if (!weatherText) return;
 
-            document.documentElement.style.setProperty('--heading-color', chosenColor);
-            document.documentElement.style.setProperty('--accent-color', chosenColor);
-            document.documentElement.style.setProperty('--accent-hover', chosenColor);
+        // Coordinates for New Castle, PA
+        const url = 'https://api.open-meteo.com/v1/forecast?latitude=41.00&longitude=-80.34&current_weather=true&temperature_unit=fahrenheit';
 
-            swatches.forEach(s => s.classList.remove('active'));
-            if (customColorInput.parentElement) {
-                customColorInput.parentElement.classList.add('active');
-            }
-
-            localStorage.setItem('dashboard_custom_color', chosenColor);
-            localStorage.removeItem('dashboard_accent_theme');
-        });
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            
+            const data = await response.json();
+            const temp = Math.round(data.current_weather.temperature);
+            weatherText.innerHTML = `🌤️ New Castle, PA: <strong>${temp}°F</strong>`;
+        } catch (err) {
+            console.error('Weather fetch error:', err);
+            weatherText.innerHTML = `🌤️ Weather unavailable`;
+        }
     }
-
-    if (modeCheckbox) {
-        modeCheckbox.addEventListener('change', (e) => {
-            setDarkMode(e.target.checked);
-        });
-    }
-
-    const savedMode = localStorage.getItem('dashboard_theme_mode');
-    setDarkMode(savedMode === 'dark');
+    fetchWeather();
 
     // --------------------------------------------------
-    // SCRATCHPAD & STICKY NOTES LOGIC
+    // HOMEWORK 8 FORM VALIDATION & SCRATCHPAD LOGIC
     // --------------------------------------------------
     const scratchForm = document.getElementById('scratchpad-form');
     const titleInput = document.getElementById('note-title');
     const bodyInput = document.getElementById('note-body');
-    const priorityInput = document.getElementById('note-priority');
-    const colorPickerChips = document.querySelectorAll('.color-chip');
-    const selectedColorInput = document.getElementById('selected-note-color');
+    const emailInput = document.getElementById('note-email');
+    const prioritySelect = document.getElementById('note-priority');
+    const colorInput = document.getElementById('selected-note-color');
+    const colorChips = document.querySelectorAll('.color-chip');
     const notesGrid = document.getElementById('notes-grid');
+
+    const bodyError = document.getElementById('body-error');
+    const emailError = document.getElementById('email-error');
 
     let scratchNotes = JSON.parse(localStorage.getItem('scratchpad_notes')) || [];
 
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>"']/g, (m) => ({
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#039;'
-        }[m]));
+    // AUTO-CLEARING ERROR LISTENERS (Satisfies Format Validation Rule)
+    if (bodyInput && bodyError) {
+        bodyInput.addEventListener('input', () => {
+            if (bodyInput.value.trim()) bodyError.textContent = '';
+        });
+    }
+
+    if (emailInput && emailError) {
+        emailInput.addEventListener('input', () => {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (emailRegex.test(emailInput.value.trim())) emailError.textContent = '';
+        });
+    }
+
+    // Color Chip Selection
+    colorChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            colorChips.forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            if (colorInput) colorInput.value = chip.dataset.color;
+        });
+    });
+
+    function validateScratchpadForm() {
+        let isValid = true;
+
+        if (bodyError) bodyError.textContent = '';
+        if (emailError) emailError.textContent = '';
+
+        // Requirement: Empty field check
+        if (!bodyInput.value.trim()) {
+            if (bodyError) bodyError.textContent = 'Note content cannot be empty!';
+            isValid = false;
+        }
+
+        // Requirement: Format validation on email
+        const emailVal = emailInput ? emailInput.value.trim() : '';
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailVal) {
+            if (emailError) emailError.textContent = 'Email address is required!';
+            isValid = false;
+        } else if (!emailRegex.test(emailVal)) {
+            if (emailError) emailError.textContent = 'Please enter a valid email address (e.g. name@example.com).';
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    if (scratchForm) {
+        scratchForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Requirement: Intercept submit event
+
+            if (!validateScratchpadForm()) return;
+
+            const newNote = {
+                id: Date.now(),
+                title: titleInput ? titleInput.value.trim() : '',
+                body: bodyInput ? bodyInput.value.trim() : '',
+                email: emailInput ? emailInput.value.trim() : '',
+                priority: prioritySelect ? prioritySelect.value : 'Medium',
+                color: colorInput ? colorInput.value : '#FFF59D',
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+
+            scratchNotes.unshift(newNote);
+            localStorage.setItem('scratchpad_notes', JSON.stringify(scratchNotes));
+
+            scratchForm.reset();
+            if (colorInput) colorInput.value = '#FFF59D';
+            colorChips.forEach(c => c.classList.remove('active'));
+            if (colorChips[0]) colorChips[0].classList.add('active');
+
+            renderNotes();
+        });
     }
 
     function renderNotes() {
@@ -287,309 +338,34 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = document.createElement('div');
             card.className = 'sticky-note';
             card.style.backgroundColor = note.color;
-            card.dataset.id = note.id;
 
             card.innerHTML = `
                 <div class="sticky-note-header">
-                    <h3 class="note-title-text">${escapeHtml(note.title || 'Untitled Note')}</h3>
-                    <div class="note-actions">
-                        <button class="btn-icon btn-edit" title="Edit Note" aria-label="Edit Note">✏️</button>
-                        <button class="btn-icon btn-delete" title="Delete Note" aria-label="Delete Note">✕</button>
-                    </div>
+                    <h3>${escapeHtml(note.title || 'Untitled Note')}</h3>
+                    <button class="btn-icon btn-delete" title="Delete Note">✕</button>
                 </div>
                 <div class="sticky-note-body">${escapeHtml(note.body)}</div>
                 <div class="sticky-note-footer">
                     <span class="priority-badge">Priority: ${escapeHtml(note.priority)}</span>
-                    <span class="note-time">${escapeHtml(note.timestamp)}</span>
+                    <span>${escapeHtml(note.timestamp)}</span>
                 </div>
             `;
 
-            card.querySelector('.btn-delete').addEventListener('click', () => deleteNote(note.id));
-            card.querySelector('.btn-edit').addEventListener('click', (e) => toggleNoteEdit(card, note.id, e.currentTarget));
+            card.querySelector('.btn-delete').addEventListener('click', () => {
+                scratchNotes = scratchNotes.filter(n => n.id !== note.id);
+                localStorage.setItem('scratchpad_notes', JSON.stringify(scratchNotes));
+                renderNotes();
+            });
 
             notesGrid.appendChild(card);
         });
     }
 
-    function saveAndRenderNotes() {
-        localStorage.setItem('scratchpad_notes', JSON.stringify(scratchNotes));
-        renderNotes();
-    }
-
-    function deleteNote(id) {
-        scratchNotes = scratchNotes.filter(n => n.id !== id);
-        saveAndRenderNotes();
-    }
-
-    function toggleNoteEdit(card, id, editBtn) {
-        const titleEl = card.querySelector('.note-title-text');
-        const bodyEl = card.querySelector('.sticky-note-body');
-        const isEditing = titleEl.isContentEditable;
-
-        if (!isEditing) {
-            titleEl.contentEditable = 'true';
-            bodyEl.contentEditable = 'true';
-            titleEl.focus();
-            editBtn.textContent = '💾';
-            editBtn.title = 'Save Changes';
-        } else {
-            titleEl.contentEditable = 'false';
-            bodyEl.contentEditable = 'false';
-            editBtn.textContent = '✏️';
-            editBtn.title = 'Edit Note';
-
-            const targetNote = scratchNotes.find(n => n.id === id);
-            if (targetNote) {
-                targetNote.title = titleEl.innerText.trim() || 'Untitled Note';
-                targetNote.body = bodyEl.innerText.trim() || '';
-                localStorage.setItem('scratchpad_notes', JSON.stringify(scratchNotes));
-            }
-        }
-    }
-
-    function validateScratchpadForm() {
-        let isValid = true;
-        const bodyError = document.getElementById('body-error');
-
-        if (bodyError) bodyError.textContent = '';
-
-        if (!bodyInput.value.trim()) {
-            if (bodyError) bodyError.textContent = 'Note content cannot be empty!';
-            isValid = false;
-        }
-
-        return isValid;
-    }
-
-    // 1. CHIP SELECTION LISTENER: Updates active ring visual and hidden input value
-    if (colorPickerChips.length > 0) {
-        colorPickerChips.forEach(chip => {
-            chip.addEventListener('click', (e) => {
-                colorPickerChips.forEach(c => c.classList.remove('active'));
-                e.currentTarget.classList.add('active');
-                if (selectedColorInput) {
-                    selectedColorInput.value = e.currentTarget.dataset.color;
-                }
-            });
-        });
-    }
-
-    // 2. FORM SUBMISSION & CHIP RESET: Captures note & resets chips back to default
-    if (scratchForm) {
-        scratchForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            if (!validateScratchpadForm()) return;
-
-            const newNote = {
-                id: Date.now().toString(),
-                title: titleInput.value.trim(),
-                body: bodyInput.value.trim(),
-                priority: priorityInput ? priorityInput.value : 'Medium',
-                color: selectedColorInput ? selectedColorInput.value : '#FFF59D',
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            };
-
-            scratchNotes.unshift(newNote);
-            saveAndRenderNotes();
-
-            scratchForm.reset();
-
-            // Reset chip active state to first default chip
-            if (colorPickerChips.length > 0) {
-                colorPickerChips.forEach(c => c.classList.remove('active'));
-                colorPickerChips[0].classList.add('active');
-            }
-            if (selectedColorInput) {
-                selectedColorInput.value = '#FFF59D';
-            }
-        });
+    function escapeHtml(str) {
+        return str.replace(/[&<>"']/g, match => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[match]));
     }
 
     renderNotes();
-
-    // --------------------------------------------------
-    // ASSIGNMENTS & SHEETS INTEGRATION
-    // --------------------------------------------------
-    let rawAssignments = [];
-    let selectedWeek = 'ALL';
-
-    const syncBtn = document.getElementById('sync-api-btn');
-    const assignmentList = document.getElementById('sheet-assignment-list');
-    const courseFilter = document.getElementById('course-filter');
-    const statusFilter = document.getElementById('status-filter');
-
-    function getProp(obj, key) {
-        if (!obj) return '';
-        const foundKey = Object.keys(obj).find(k => k.toLowerCase() === key.toLowerCase());
-        return foundKey ? obj[foundKey] : '';
-    }
-
-    function isItemComplete(item) {
-        const progressVal = String(getProp(item, 'progress')).trim().toLowerCase();
-        const completeVal = String(getProp(item, 'complete')).trim().toLowerCase();
-        const statusVal = String(getProp(item, 'status')).trim().toLowerCase();
-
-        return progressVal === 'complete' || 
-               completeVal === 'true' || 
-               statusVal === 'complete' || 
-               statusVal === 'completed';
-    }
-
-    function getCurrentAcademicWeek() {
-        const termStart = new Date('2026-07-06T00:00:00');
-        const today = new Date();
-        const diffInMs = today - termStart;
-        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-
-        let currentWeek = Math.floor(diffInDays / 7) + 1;
-        if (currentWeek < 1) currentWeek = 1;
-        if (currentWeek > 11) currentWeek = 11;
-        return currentWeek;
-    }
-
-    async function fetchAssignmentsFromSheets() {
-        if (assignmentList) {
-            assignmentList.innerHTML = `<li class="loading-state">⏳ Connecting to Google Sheets...</li>`;
-        }
-
-        try {
-            const response = await fetch(SHEETS_API_URL, { redirect: 'follow' });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            const unparsedRows = Array.isArray(data) ? data : (data.data || data.rows || []);
-            
-            rawAssignments = unparsedRows.filter(item => {
-                const title = getProp(item, 'assignment') || getProp(item, 'title');
-                return title && String(title).trim().toLowerCase() !== 'empty';
-            });
-
-            populateCourseDropdown(rawAssignments);
-            updateTermProgress(rawAssignments);
-            renderFilteredAssignments();
-        } catch (error) {
-            console.error('Error fetching sheet data:', error);
-            if (assignmentList) {
-                assignmentList.innerHTML = `
-                    <li class="assignment-card">
-                        ❌ <strong>Sync Failed:</strong> ${error.message}.<br>
-                        Make sure your Web App deployment is set to "Anyone" access.
-                    </li>`;
-            }
-        }
-    }
-
-    function populateCourseDropdown(data) {
-        if (!courseFilter) return;
-        const rawCourses = data.map(item => getProp(item, 'class') || getProp(item, 'course')).filter(Boolean);
-        const courses = ['ALL', ...new Set(rawCourses)];
-        courseFilter.innerHTML = courses.map(c => `<option value="${c}">${c === 'ALL' ? 'All Courses' : c}</option>`).join('');
-    }
-
-    function updateTermProgress(data) {
-        const currentWeek = getCurrentAcademicWeek();
-        const totalTasks = data.length;
-        const completedTasks = data.filter(isItemComplete).length;
-        const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-
-        const fillBar = document.getElementById('term-progress-fill');
-        const statusText = document.getElementById('term-status-text');
-        const badgeText = document.getElementById('week-badge');
-        const termHeader = document.getElementById('term-header');
-
-        if (fillBar && statusText && badgeText) {
-            fillBar.style.width = `${completionPercentage}%`;
-            if (termHeader) termHeader.textContent = `Term Progress (Week ${currentWeek} of 11)`;
-            badgeText.textContent = `Week ${currentWeek} | ${completedTasks}/${totalTasks} Tasks Done`;
-            statusText.textContent = `${completionPercentage}% of overall term coursework completed (${completedTasks} of ${totalTasks} assignments marked Complete).`;
-        }
-    }
-
-    function renderFilteredAssignments() {
-        if (!assignmentList) return;
-        assignmentList.innerHTML = '';
-
-        const selectedCourse = courseFilter ? courseFilter.value : 'ALL';
-        const selectedStatus = statusFilter ? statusFilter.value : 'ALL';
-
-        const filtered = rawAssignments.filter(item => {
-            const itemCourse = getProp(item, 'class') || getProp(item, 'course');
-            const itemWeek = getProp(item, 'week');
-
-            const matchesCourse = selectedCourse === 'ALL' || itemCourse === selectedCourse;
-            const matchesWeek = selectedWeek === 'ALL' || String(itemWeek) === String(selectedWeek);
-
-            const isDone = isItemComplete(item);
-            const matchesStatus = selectedStatus === 'ALL' || 
-                (selectedStatus === 'Complete' && isDone) || 
-                (selectedStatus === 'Pending' && !isDone);
-
-            return matchesCourse && matchesWeek && matchesStatus;
-        });
-
-        if (filtered.length === 0) {
-            assignmentList.innerHTML = `<li class="assignment-card">No assignments found for Week ${selectedWeek} / ${selectedCourse}.</li>`;
-            return;
-        }
-
-        filtered.forEach(item => {
-            const li = document.createElement('li');
-            const isDone = isItemComplete(item);
-
-            const priorityVal = getProp(item, 'priority');
-            const isHighPriority = String(priorityVal).toLowerCase() === 'high';
-
-            const title = getProp(item, 'assignment') || getProp(item, 'title') || getProp(item, 'name') || 'Untitled Assignment';
-            const courseCode = (getProp(item, 'class') || getProp(item, 'course') || 'General').trim();
-            const courseInfo = COURSE_CONFIG[courseCode] || { name: courseCode, color: '#6c757d' };
-
-            const weekNum = getProp(item, 'week') || '-';
-            const dueDate = getProp(item, 'date due') || getProp(item, 'due date') || getProp(item, 'due') || 'N/A';
-
-            li.className = `assignment-card ${isDone ? 'complete' : ''} ${isHighPriority ? 'high-priority' : ''}`;
-            li.style.borderLeftColor = courseInfo.color;
-
-            li.innerHTML = `
-                <div class="assignment-details">
-                    <strong>${title}</strong>
-                    <div class="assignment-meta">
-                        <span class="course-tag" style="background-color: ${courseInfo.color}; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
-                            ${courseInfo.name} (${courseCode})
-                        </span> 
-                        <span class="meta-item">📅 Week ${weekNum} | Due: ${dueDate}</span>
-                        ${priorityVal ? `<span class="meta-item">| Priority: <em>${priorityVal}</em></span>` : ''}
-                    </div>
-                </div>
-                <span class="badge ${isDone ? 'badge-complete' : 'badge-pending'}">
-                    ${isDone ? 'Completed' : 'Pending'}
-                </span>
-            `;
-
-            assignmentList.appendChild(li);
-        });
-    }
-
-    if (syncBtn) {
-        syncBtn.addEventListener('click', fetchAssignmentsFromSheets);
-    }
-    if (courseFilter) {
-        courseFilter.addEventListener('change', renderFilteredAssignments);
-    }
-    if (statusFilter) {
-        statusFilter.addEventListener('change', renderFilteredAssignments);
-    }
-
-    document.querySelectorAll('.week-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            document.querySelectorAll('.week-btn').forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            selectedWeek = e.target.getAttribute('data-week');
-            renderFilteredAssignments();
-        });
-    });
-
-    fetchAssignmentsFromSheets();
 });
