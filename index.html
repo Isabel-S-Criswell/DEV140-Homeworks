@@ -78,49 +78,42 @@
   <h2>Quick Thoughts Scratchpad</h2>
   <p class="subtitle">Spill your thoughts or create a new note:</p>
 
-  <!-- Google Keep Style Form Container -->
-  <form id="keep-note-form" class="keep-form" novalidate>
-    <div id="form-error" class="error-message" aria-live="polite"></div>
+  <!-- Dynamic Error Display -->
+  <div id="form-error" class="error-message" aria-live="polite"></div>
 
-    <div class="form-group">
-      <label for="note-title">Title:</label>
-      <input type="text" id="note-title" name="noteTitle" placeholder="Title (e.g., Paint colors)">
+  <!-- Keep-Style Floating Form Bar -->
+  <form id="keep-note-form" class="keep-composer" novalidate>
+    <div class="composer-body">
+      <label for="note-title" class="visually-hidden">Note Title</label>
+      <input type="text" id="note-title" name="noteTitle" placeholder="Title (optional)" class="keep-input title-input">
+
+      <label for="note-body" class="visually-hidden">Note Content</label>
+      <textarea id="note-body" name="noteBody" rows="2" placeholder="Take a note..." class="keep-input body-input"></textarea>
     </div>
 
-    <div class="form-group">
-      <label for="note-body">Note Content:</label>
-      <textarea id="note-body" name="noteBody" rows="3" placeholder="Take a note..."></textarea>
-    </div>
+    <div class="composer-toolbar">
+      <div class="tool-group">
+        <label for="note-tag" class="visually-hidden">Label Tag</label>
+        <input type="text" id="note-tag" name="noteTag" placeholder="#tag" class="keep-input tag-input">
 
-    <div class="form-row">
-      <div class="form-group">
-        <label for="note-tag">Label Tag:</label>
-        <input type="text" id="note-tag" name="noteTag" placeholder="#ideas or #school">
-      </div>
-
-      <div class="form-group">
-        <label for="note-color">Card Color:</label>
-        <select id="note-color" name="noteColor">
+        <label for="note-color" class="visually-hidden">Card Color</label>
+        <select id="note-color" name="noteColor" class="keep-select">
           <option value="yellow">Butter Yellow</option>
           <option value="green">Sage Green</option>
           <option value="purple">Soft Purple</option>
           <option value="white">Default White</option>
         </select>
       </div>
-    </div>
 
-    <button type="submit" class="btn-primary">Pin Note</button>
+      <button type="submit" class="btn-primary pin-btn">Pin Note</button>
+    </div>
   </form>
 
-  <!-- Existing Sticky Notes Grid -->
+  <!-- Notes Grid Container -->
   <div id="notes-container" class="notes-grid">
-    <!-- Dynnamically added Keep-style notes appear here -->
+    <!-- Existing & New Stickies Render Here -->
   </div>
 </section>
-
-            <ul id="sticky-note-list" class="sticky-note-grid"></ul>
-        </section>
-
         <!-- 2-COLUMN ROW FOR ABOUT ME & INTERESTS -->
         <div class="top-cards-row">
             
