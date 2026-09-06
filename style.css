@@ -519,3 +519,19 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+.color-yellow { background-color: #fef08a; } /* Butter Yellow */
+.color-green  { background-color: #dcfce7; } /* Sage Green */
+.color-purple { background-color: #f3e8ff; } /* Soft Purple */
+.color-white  { background-color: #ffffff; border: 1px solid #e2e8f0; }
+
+.input-error {
+  border: 2px solid #ef4444 !important;
+  background-color: #fef2f2;
+}
+
+.error-message {
+  color: #dc2626;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  min-height: 1.25rem;
+}
