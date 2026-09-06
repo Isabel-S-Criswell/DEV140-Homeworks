@@ -444,7 +444,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --------------------------------------------------
-    // STICKY NOTE SCRATCHPAD
+    // STICKY NOTE SCRATCHPAD (QUICK TEXT NOTES)
     // --------------------------------------------------
     const noteInput = document.getElementById('note-input');
     const addNoteBtn = document.getElementById('add-note-btn');
@@ -538,12 +538,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initialize Notes and Fetch Sheets Data
+    // Initialize Scratchpad Notes and Fetch Sheets Data
     loadSavedNotes();
     fetchAssignmentsFromSheets();
 
     // --------------------------------------------------
-    // KEEP-STYLE NOTE FORM INTEGRATION
+    // KEEP-STYLE FORM STICKY NOTES (PERSISTENT & STYLED)
     // --------------------------------------------------
     const keepForm = document.getElementById('keep-note-form');
     const noteTitle = document.getElementById('note-title');
@@ -553,8 +553,81 @@ document.addEventListener('DOMContentLoaded', () => {
     const formError = document.getElementById('form-error');
     const notesContainer = document.getElementById('notes-container');
 
+    // Save Keep-style notes to LocalStorage
+    function saveKeepNotesToStorage() {
+        if (!notesContainer) return;
+        const notes = [];
+        notesContainer.querySelectorAll('.sticky-card[data-keep-note="true"]').forEach(card => {
+            notes.push({
+                title: card.dataset.title || '',
+                body: card.dataset.body || '',
+                tag: card.dataset.tag || '',
+                color: card.dataset.color || 'default',
+                syncStatus: card.dataset.syncStatus || 'Saved locally'
+            });
+        });
+        localStorage.setItem('dashboard_keep_notes', JSON.stringify(notes));
+    }
+
+    // Render Keep note element as a proper sticky note
+    function renderKeepNoteCard(data) {
+        if (!notesContainer) return;
+
+        const noteCard = document.createElement('div');
+        noteCard.className = `sticky-card sticky-note color-${data.color}`;
+        noteCard.setAttribute('data-keep-note', 'true');
+        noteCard.dataset.title = data.title;
+        noteCard.dataset.body = data.body;
+        noteCard.dataset.tag = data.tag;
+        noteCard.dataset.color = data.color;
+        noteCard.dataset.syncStatus = data.syncStatus;
+
+        noteCard.style.backgroundColor = 'var(--sticky-bg)';
+        noteCard.style.color = 'var(--sticky-text)';
+        noteCard.style.padding = '1rem';
+        noteCard.style.borderRadius = '8px';
+        noteCard.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+        noteCard.style.position = 'relative';
+
+        noteCard.innerHTML = `
+            ${data.title ? `<h3 style="margin-top:0; margin-bottom:0.5rem; font-size:1.1rem; color:inherit;">${data.title}</h3>` : ''}
+            <p style="margin:0 0 0.75rem 0; font-size:0.95rem; line-height:1.4; color:inherit;">${data.body}</p>
+            <div class="note-footer" style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; opacity:0.85;">
+                ${data.tag ? `<span class="tag-badge" style="font-weight:600;">${data.tag}</span>` : '<span></span>'}
+                <small class="sync-tag">${data.syncStatus}</small>
+            </div>
+            <button class="delete-note-btn" aria-label="Delete note" style="position:absolute; top:8px; right:8px; background:none; border:none; cursor:pointer; font-size:1.2rem; color:inherit; opacity:0.7;">&times;</button>
+        `;
+
+        const deleteBtn = noteCard.querySelector('.delete-note-btn');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', () => {
+                noteCard.remove();
+                saveKeepNotesToStorage();
+            });
+        }
+
+        notesContainer.prepend(noteCard);
+    }
+
+    // Load saved Keep-style notes on page load
+    function loadSavedKeepNotes() {
+        const saved = localStorage.getItem('dashboard_keep_notes');
+        if (saved) {
+            try {
+                const notes = JSON.parse(saved);
+                if (Array.isArray(notes)) {
+                    // Render in reverse order so prepend keeps correct sequence
+                    notes.reverse().forEach(note => renderKeepNoteCard(note));
+                }
+            } catch (e) {
+                console.error('Error loading saved keep notes:', e);
+            }
+        }
+    }
+
     if (keepForm && noteBody && formError && notesContainer) {
-        // Clear errors live as user types/corrects fields
+        // Clear errors on input change
         [noteTitle, noteBody, noteTag, noteColor].forEach(input => {
             if (input) {
                 input.addEventListener('input', () => {
@@ -572,21 +645,18 @@ document.addEventListener('DOMContentLoaded', () => {
             let tagVal = noteTag ? noteTag.value.trim() : '';
             const colorVal = noteColor ? noteColor.value : 'default';
 
-            // Check for empty required fields
             if (!bodyVal) {
                 formError.textContent = 'Note content cannot be empty.';
                 noteBody.classList.add('input-error');
                 return;
             }
 
-            // Format validation (Ensure tags start with # if provided)
             if (tagVal && !tagVal.startsWith('#')) {
                 formError.textContent = 'Labels must start with a # symbol (e.g., #house).';
                 if (noteTag) noteTag.classList.add('input-error');
                 return;
             }
 
-            // API Fetch with error handling
             let syncStatus = '';
             try {
                 const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
@@ -606,29 +676,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 syncStatus = 'Saved locally';
             }
 
-            // Render Keep-Style Note Card in DOM
-            const noteCard = document.createElement('div');
-            noteCard.className = `sticky-note color-${colorVal}`;
-            noteCard.innerHTML = `
-                ${titleVal ? `<h3>${titleVal}</h3>` : ''}
-                <p>${bodyVal}</p>
-                <div class="note-footer">
-                    ${tagVal ? `<span class="tag-badge">${tagVal}</span>` : ''}
-                    <small class="sync-tag">${syncStatus}</small>
-                </div>
-                <button class="delete-btn" aria-label="Delete note">×</button>
-            `;
+            const noteData = {
+                title: titleVal,
+                body: bodyVal,
+                tag: tagVal,
+                color: colorVal,
+                syncStatus: syncStatus
+            };
 
-            // Clean delete listener instead of inline onclick
-            const cardDeleteBtn = noteCard.querySelector('.delete-btn');
-            if (cardDeleteBtn) {
-                cardDeleteBtn.addEventListener('click', () => {
-                    noteCard.remove();
-                });
-            }
-
-            notesContainer.prepend(noteCard);
+            renderKeepNoteCard(noteData);
+            saveKeepNotesToStorage();
             keepForm.reset();
         });
+
+        loadSavedKeepNotes();
     }
 });
