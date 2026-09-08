@@ -28,56 +28,66 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Render Assignments matching active filters
-    function renderFilteredAssignments() {
-        if (!assignmentList) return;
-        assignmentList.innerHTML = '';
+// Render Assignments with active filters and pill badges
+function renderFilteredAssignments() {
+    if (!assignmentList) return;
+    assignmentList.innerHTML = '';
 
-        const selectedCourse = courseFilter ? courseFilter.value : 'ALL';
-        const selectedStatus = statusFilter ? statusFilter.value : 'ALL';
+    const selectedCourse = courseFilter ? courseFilter.value : 'ALL';
+    const selectedStatus = statusFilter ? statusFilter.value : 'ALL';
 
-        const filtered = allAssignments.filter(item => {
-            // Filter by Course
-            if (selectedCourse !== 'ALL' && item.Class !== selectedCourse) return false;
+    const filtered = allAssignments.filter(item => {
+        // Filter by Class
+        if (selectedCourse !== 'ALL' && item.Class !== selectedCourse) return false;
 
-            // Filter by Status / Progress
-            const isComplete = item.Complete === true || item.Progress === 'Complete';
-            if (selectedStatus === 'Pending' && isComplete) return false;
-            if (selectedStatus === 'Complete' && !isComplete) return false;
+        // Filter by Progress / Status
+        const isComplete = item.Complete === true || item.Progress === 'Complete';
+        if (selectedStatus === 'Pending' && isComplete) return false;
+        if (selectedStatus === 'Complete' && !isComplete) return false;
 
-            // Filter by Week
-            if (activeWeek !== 'ALL' && String(item.Week) !== String(activeWeek)) return false;
+        // Filter by Week
+        if (activeWeek !== 'ALL' && String(item.Week) !== String(activeWeek)) return false;
 
-            return true;
-        });
+        return true;
+    });
 
-        if (filtered.length === 0) {
-            assignmentList.innerHTML = '<li class="empty-state">No matching assignments found.</li>';
-            return;
-        }
-
-        filtered.forEach(item => {
-            const li = document.createElement('li');
-            li.className = 'assignment-card';
-
-            const isComplete = item.Complete === true || item.Progress === 'Complete';
-            const statusClass = isComplete ? 'status-complete' : 'status-pending';
-            const statusText = isComplete ? 'Complete' : 'Pending';
-
-            li.innerHTML = `
-                <div class="assignment-header">
-                    <span class="badge course-badge">${escapeHtml(item.Class || 'General')}</span>
-                    <span class="badge week-badge">W${escapeHtml(String(item.Week || '1'))}</span>
-                    <span class="status-tag ${statusClass}">${statusText}</span>
-                </div>
-                <div class="assignment-body">
-                    <h4 class="assignment-title">${escapeHtml(item.Assignment || 'Untitled')}</h4>
-                    <p class="due-date">📅 Due: <strong>${escapeHtml(item['Date Due'] || 'N/A')}</strong> at ${escapeHtml(item['Time Due'] || '11:59 PM')}</p>
-                </div>
-            `;
-            assignmentList.appendChild(li);
-        });
+    if (filtered.length === 0) {
+        assignmentList.innerHTML = '<li class="empty-state">No matching assignments found.</li>';
+        return;
     }
+
+    filtered.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'assignment-card-item'; // Container for the card
+
+        const isComplete = item.Complete === true || item.Progress === 'Complete';
+        const statusClass = isComplete ? 'badge-status-complete' : 'badge-status-pending';
+        const statusText = isComplete ? 'Complete' : 'Pending';
+
+        // Sanitized values
+        const courseCode = escapeHtml(item.Class || 'General');
+        const weekNum = escapeHtml(String(item.Week || '1'));
+        const title = escapeHtml(item.Assignment || 'Untitled');
+        const dueDate = escapeHtml(item['Date Due'] || 'N/A');
+        const dueTime = escapeHtml(item['Time Due'] || '11:59 PM');
+
+        li.innerHTML = `
+            <div class="assignment-card">
+                <div class="card-pills-header">
+                    <span class="badge badge-course">${courseCode}</span>
+                    <span class="badge badge-week">W${weekNum}</span>
+                    <span class="badge ${statusClass}">${statusText}</span>
+                </div>
+                <h4 class="assignment-title">${title}</h4>
+                <div class="due-info">
+                    <span class="due-icon">📅</span> Due: <strong>${dueDate}</strong> at ${dueTime}
+                </div>
+            </div>
+        `;
+        
+        assignmentList.appendChild(li);
+    });
+}
 
     if (syncBtn) {
         syncBtn.addEventListener('click', async () => {
