@@ -2,6 +2,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbw25hwFfwblp7pRj0uEhot_CXxtWwBTg6IfAq1JiGHUsrIUWxddt2I2G1idOuhNamA4/exec';
 
+// --------------------------------------------------
+// GOOGLE SHEETS API FETCH LOGIC
+// --------------------------------------------------
+const syncBtn = document.getElementById('sync-api-btn');
+const assignmentList = document.getElementById('sheet-assignment-list');
+
+if (syncBtn) {
+    syncBtn.addEventListener('click', async () => {
+        if (!assignmentList) return;
+        
+        assignmentList.innerHTML = '<li class="loading-state">Syncing data from Google Sheets...</li>';
+
+        try {
+            const response = await fetch(SHEETS_API_URL);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+            const data = await response.json();
+
+            // Clear loading text
+            assignmentList.innerHTML = '';
+
+            if (!data || data.length === 0) {
+                assignmentList.innerHTML = '<li>No assignments found.</li>';
+                return;
+            }
+
+            // Render each assignment item
+            data.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.Class || ''} - ${item.Assignment || 'Untitled'} (Due: ${item['Date Due'] || 'N/A'})`;
+                assignmentList.appendChild(li);
+            });
+
+        } catch (err) {
+            console.error('Sheets fetch error:', err);
+            assignmentList.innerHTML = '<li class="error-state">Failed to sync assignments. Check console for details.</li>';
+        }
+    });
+}
+    
     const THEMES = {
         purple: {
             light: {
