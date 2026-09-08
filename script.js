@@ -2,46 +2,122 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbw25hwFfwblp7pRj0uEhot_CXxtWwBTg6IfAq1JiGHUsrIUWxddt2I2G1idOuhNamA4/exec';
 
-// --------------------------------------------------
-// GOOGLE SHEETS API FETCH LOGIC
-// --------------------------------------------------
-const syncBtn = document.getElementById('sync-api-btn');
-const assignmentList = document.getElementById('sheet-assignment-list');
+    // --------------------------------------------------
+    // GOOGLE SHEETS API FETCH & FILTER LOGIC
+    // --------------------------------------------------
+    let allAssignments = [];
+    let activeWeek = 'ALL';
 
-if (syncBtn) {
-    syncBtn.addEventListener('click', async () => {
-        if (!assignmentList) return;
+    const syncBtn = document.getElementById('sync-api-btn');
+    const assignmentList = document.getElementById('sheet-assignment-list');
+    const courseFilter = document.getElementById('course-filter');
+    const statusFilter = document.getElementById('status-filter');
+    const weekButtons = document.querySelectorAll('.week-btn');
+
+    // Populate Course Dropdown dynamically based on fetched data
+    function populateCourseFilter(data) {
+        if (!courseFilter) return;
+        const courses = [...new Set(data.map(item => item.Class).filter(Boolean))];
         
-        assignmentList.innerHTML = '<li class="loading-state">Syncing data from Google Sheets...</li>';
+        courseFilter.innerHTML = '<option value="ALL" selected>All Courses</option>';
+        courses.forEach(course => {
+            const option = document.createElement('option');
+            option.value = course;
+            option.textContent = course;
+            courseFilter.appendChild(option);
+        });
+    }
 
-        try {
-            const response = await fetch(SHEETS_API_URL);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    // Render Assignments matching active filters
+    function renderFilteredAssignments() {
+        if (!assignmentList) return;
+        assignmentList.innerHTML = '';
 
-            const data = await response.json();
+        const selectedCourse = courseFilter ? courseFilter.value : 'ALL';
+        const selectedStatus = statusFilter ? statusFilter.value : 'ALL';
 
-            // Clear loading text
-            assignmentList.innerHTML = '';
+        const filtered = allAssignments.filter(item => {
+            // Filter by Course
+            if (selectedCourse !== 'ALL' && item.Class !== selectedCourse) return false;
 
-            if (!data || data.length === 0) {
-                assignmentList.innerHTML = '<li>No assignments found.</li>';
-                return;
-            }
+            // Filter by Status / Progress
+            const isComplete = item.Complete === true || item.Progress === 'Complete';
+            if (selectedStatus === 'Pending' && isComplete) return false;
+            if (selectedStatus === 'Complete' && !isComplete) return false;
 
-            // Render each assignment item
-            data.forEach(item => {
-                const li = document.createElement('li');
-                li.textContent = `${item.Class || ''} - ${item.Assignment || 'Untitled'} (Due: ${item['Date Due'] || 'N/A'})`;
-                assignmentList.appendChild(li);
-            });
+            // Filter by Week
+            if (activeWeek !== 'ALL' && String(item.Week) !== String(activeWeek)) return false;
 
-        } catch (err) {
-            console.error('Sheets fetch error:', err);
-            assignmentList.innerHTML = '<li class="error-state">Failed to sync assignments. Check console for details.</li>';
+            return true;
+        });
+
+        if (filtered.length === 0) {
+            assignmentList.innerHTML = '<li class="empty-state">No matching assignments found.</li>';
+            return;
         }
+
+        filtered.forEach(item => {
+            const li = document.createElement('li');
+            li.className = 'assignment-card';
+
+            const isComplete = item.Complete === true || item.Progress === 'Complete';
+            const statusClass = isComplete ? 'status-complete' : 'status-pending';
+            const statusText = isComplete ? 'Complete' : 'Pending';
+
+            li.innerHTML = `
+                <div class="assignment-header">
+                    <span class="badge course-badge">${escapeHtml(item.Class || 'General')}</span>
+                    <span class="badge week-badge">W${escapeHtml(String(item.Week || '1'))}</span>
+                    <span class="status-tag ${statusClass}">${statusText}</span>
+                </div>
+                <div class="assignment-body">
+                    <h4 class="assignment-title">${escapeHtml(item.Assignment || 'Untitled')}</h4>
+                    <p class="due-date">📅 Due: <strong>${escapeHtml(item['Date Due'] || 'N/A')}</strong> at ${escapeHtml(item['Time Due'] || '11:59 PM')}</p>
+                </div>
+            `;
+            assignmentList.appendChild(li);
+        });
+    }
+
+    if (syncBtn) {
+        syncBtn.addEventListener('click', async () => {
+            if (!assignmentList) return;
+            
+            assignmentList.innerHTML = '<li class="loading-state">Syncing data from Google Sheets...</li>';
+
+            try {
+                const response = await fetch(SHEETS_API_URL);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                const data = await response.json();
+                allAssignments = Array.isArray(data) ? data : [];
+
+                populateCourseFilter(allAssignments);
+                renderFilteredAssignments();
+
+            } catch (err) {
+                console.error('Sheets fetch error:', err);
+                assignmentList.innerHTML = '<li class="error-state">Failed to sync assignments. Check console for details.</li>';
+            }
+        });
+    }
+
+    // Attach Event Listeners to Filter Controls
+    if (courseFilter) courseFilter.addEventListener('change', renderFilteredAssignments);
+    if (statusFilter) statusFilter.addEventListener('change', renderFilteredAssignments);
+
+    weekButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            weekButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeWeek = btn.dataset.week || 'ALL';
+            renderFilteredAssignments();
+        });
     });
-}
-    
+
+    // --------------------------------------------------
+    // THEME SELECTION & TOGGLE LOGIC
+    // --------------------------------------------------
     const THEMES = {
         purple: {
             light: {
@@ -252,13 +328,12 @@ if (syncBtn) {
     });
 
     // --------------------------------------------------
-    // BONUS REQUIREMENT: WEATHER API FETCH
+    // WEATHER API FETCH
     // --------------------------------------------------
     async function fetchWeather() {
         const weatherText = document.getElementById('weather-text');
         if (!weatherText) return;
 
-        // Coordinates for New Castle, PA
         const url = 'https://api.open-meteo.com/v1/forecast?latitude=41.00&longitude=-80.34&current_weather=true&temperature_unit=fahrenheit';
 
         try {
@@ -276,7 +351,7 @@ if (syncBtn) {
     fetchWeather();
 
     // --------------------------------------------------
-    // HOMEWORK 8 FORM VALIDATION & SCRATCHPAD LOGIC
+    // SCRATCHPAD FORM VALIDATION & LOGIC
     // --------------------------------------------------
     const scratchForm = document.getElementById('scratchpad-form');
     const titleInput = document.getElementById('note-title');
@@ -292,7 +367,6 @@ if (syncBtn) {
 
     let scratchNotes = JSON.parse(localStorage.getItem('scratchpad_notes')) || [];
 
-    // AUTO-CLEARING ERROR LISTENERS (Satisfies Format Validation Rule)
     if (bodyInput && bodyError) {
         bodyInput.addEventListener('input', () => {
             if (bodyInput.value.trim()) bodyError.textContent = '';
@@ -306,7 +380,6 @@ if (syncBtn) {
         });
     }
 
-    // Color Chip Selection
     colorChips.forEach(chip => {
         chip.addEventListener('click', () => {
             colorChips.forEach(c => c.classList.remove('active'));
@@ -321,13 +394,11 @@ if (syncBtn) {
         if (bodyError) bodyError.textContent = '';
         if (emailError) emailError.textContent = '';
 
-        // Requirement: Empty field check
         if (!bodyInput.value.trim()) {
             if (bodyError) bodyError.textContent = 'Note content cannot be empty!';
             isValid = false;
         }
 
-        // Requirement: Format validation on email
         const emailVal = emailInput ? emailInput.value.trim() : '';
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -344,7 +415,7 @@ if (syncBtn) {
 
     if (scratchForm) {
         scratchForm.addEventListener('submit', (e) => {
-            e.preventDefault(); // Requirement: Intercept submit event
+            e.preventDefault();
 
             if (!validateScratchpadForm()) return;
 
