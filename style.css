@@ -594,3 +594,44 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+
+/* Badge & Pill Styling */
+.card-pills-header {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px; /* Rounded bubble effect */
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Course Pill */
+.badge-course {
+    background-color: var(--accent-color, #3B0764);
+    color: #ffffff;
+}
+
+/* Week Pill */
+.badge-week {
+    background-color: var(--border-color, #e2e8f0);
+    color: var(--text-color, #1e293b);
+}
+
+/* Status Pills */
+.badge-status-pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.badge-status-complete {
+    background-color: #d1fae5;
+    color: #065f46;
+}
